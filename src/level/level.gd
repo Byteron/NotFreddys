@@ -3,8 +3,9 @@ class_name Level
 
 const GRID_SIZE := Vector2(16, 16)
 
-@onready var monster: Node2D = $Monster
+@onready var monster: Monster = $Monster
 @onready var tile_map: TileMap = $TileMap
+@onready var collision_layer := tile_map.tile_set.get_custom_data_layer_by_name("Solid")
 
 
 func _ready() -> void:
@@ -24,6 +25,16 @@ func get_input_direction() -> Vector2:
 
 func move_monster(direction: Vector2) -> void:
 	if not direction or monster.is_moving:
+		return
+	
+	var new_cell = monster.cell + direction
+	
+	var is_solid := false
+	var tile_data = tile_map.get_cell_tile_data(collision_layer, new_cell)
+	if tile_data != null:
+		is_solid = tile_data.get_custom_data("Solid") as bool
+	
+	if is_solid:
 		return
 	
 	monster.cell = monster.cell + direction
