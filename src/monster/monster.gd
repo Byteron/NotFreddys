@@ -1,4 +1,4 @@
-extends Node2D
+extends Area2D
 class_name Monster
 
 var cell: Vector2

@@ -20,6 +20,11 @@ const GRID_SIZE := Vector2(16, 16)
 @onready var tile_map: TileMap = $TileMap
 @onready var collision_layer := tile_map.tile_set.get_custom_data_layer_by_name("Solid")
 
+@onready var cams: Node2D = $Cams
+
+var active_camera: Cam
+var current_camera: Cam
+
 
 func _ready() -> void:
 	monster.cell = (monster.position / GRID_SIZE).floor()
@@ -27,8 +32,7 @@ func _ready() -> void:
 	
 	guard.cell = (guard.position / GRID_SIZE).floor()
 	guard.position = guard.cell * GRID_SIZE
-	print(guard.cell, " ", guard.position)
-
+	
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact"):
@@ -79,3 +83,14 @@ func is_solid(cell: Vector2) -> bool:
 	if tile_data:
 		is_solid = tile_data.get_custom_data("Solid") as bool
 	return is_solid
+
+
+func _on_monster_area_entered(area: Area2D) -> void:
+	if area is Cam:
+		current_camera = area
+		print(current_camera.index)
+
+
+func _on_monster_area_exited(area: Area2D) -> void:
+	current_camera = null
+	print("null")

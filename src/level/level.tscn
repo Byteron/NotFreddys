@@ -1,12 +1,16 @@
-[gd_scene load_steps=5 format=3 uid="uid://cpqfrkyris6fj"]
+[gd_scene load_steps=7 format=3 uid="uid://cpqfrkyris6fj"]
 
 [ext_resource type="Script" path="res://src/level/level.gd" id="1_5evho"]
 [ext_resource type="PackedScene" uid="uid://w3kx0xop7gfl" path="res://src/monster/monster.tscn" id="2_xi6mj"]
 [ext_resource type="PackedScene" uid="uid://brsfhy0qx11ak" path="res://src/guard/guard.tscn" id="3_hq3pm"]
+[ext_resource type="PackedScene" uid="uid://cy0xud2cmg30f" path="res://src/cam/cam.tscn" id="4_gaxnp"]
 
 [sub_resource type="TileSet" id="TileSet_lgcl4"]
 custom_data_layer_0/name = "Solid"
 custom_data_layer_0/type = 1
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gfyp0"]
+size = Vector2(48, 48)
 
 [node name="Level" type="Node2D"]
 script = ExtResource("1_5evho")
@@ -20,3 +24,26 @@ position = Vector2(16, 184)
 
 [node name="Guard" parent="." instance=ExtResource("3_hq3pm")]
 position = Vector2(592, 184)
+
+[node name="Cams" type="Node2D" parent="."]
+
+[node name="Cam1" parent="Cams" instance=ExtResource("4_gaxnp")]
+position = Vector2(88, 88)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Cams/Cam1"]
+shape = SubResource("RectangleShape2D_gfyp0")
+
+[node name="Cam2" parent="Cams" instance=ExtResource("4_gaxnp")]
+position = Vector2(184, 88)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Cams/Cam2"]
+shape = SubResource("RectangleShape2D_gfyp0")
+
+[node name="Cam3" parent="Cams" instance=ExtResource("4_gaxnp")]
+position = Vector2(88, 24)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Cams/Cam3"]
+shape = SubResource("RectangleShape2D_gfyp0")
+
+[connection signal="area_entered" from="Monster" to="." method="_on_monster_area_entered"]
+[connection signal="area_exited" from="Monster" to="." method="_on_monster_area_exited"]
