@@ -17,7 +17,7 @@ const GRID_SIZE := Vector2(16, 16)
 @onready var monster: Monster = $Monster
 @onready var guard: Node2D = $Guard
 
-@onready var tile_map: TileMap = $TileMap
+@onready var tile_map: TileMap = $Maze
 @onready var collision_layer := tile_map.tile_set.get_custom_data_layer_by_name("Solid")
 
 @onready var cams: Node2D = $Cams

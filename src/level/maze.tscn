@@ -1,6 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://1o8hbtltjo5o"]
+[gd_scene load_steps=6 format=3 uid="uid://bnmtdl41edhgn"]
 
-[ext_resource type="Texture2D" uid="uid://cncm26dfp8fbu" path="res://assets/images/walls.png" id="1_eykil"]
+[ext_resource type="Texture2D" path="res://assets/images/walls.png" id="1_eykil"]
 [ext_resource type="Texture2D" uid="uid://b3ln5yrvvxmq4" path="res://assets/images/floor.png" id="2_d4f0f"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5tieo"]
