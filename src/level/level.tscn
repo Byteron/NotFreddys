@@ -15,29 +15,23 @@ script = ExtResource("1_5evho")
 [node name="Maze" parent="." instance=ExtResource("2_mxshm")]
 
 [node name="Monster" parent="." instance=ExtResource("2_xi6mj")]
-position = Vector2(16, 184)
+position = Vector2(32, 112)
 
 [node name="Guard" parent="." instance=ExtResource("3_hq3pm")]
-position = Vector2(592, 184)
+position = Vector2(208, 112)
 
 [node name="Cams" type="Node2D" parent="."]
 
 [node name="Cam1" parent="Cams" instance=ExtResource("4_gaxnp")]
-position = Vector2(88, 88)
+position = Vector2(88, 120)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Cams/Cam1"]
 shape = SubResource("RectangleShape2D_gfyp0")
 
 [node name="Cam2" parent="Cams" instance=ExtResource("4_gaxnp")]
-position = Vector2(184, 88)
+position = Vector2(344, 120)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Cams/Cam2"]
-shape = SubResource("RectangleShape2D_gfyp0")
-
-[node name="Cam3" parent="Cams" instance=ExtResource("4_gaxnp")]
-position = Vector2(88, 24)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Cams/Cam3"]
 shape = SubResource("RectangleShape2D_gfyp0")
 
 [connection signal="area_entered" from="Monster" to="." method="_on_monster_area_entered"]
