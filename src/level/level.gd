@@ -1,6 +1,17 @@
 extends Node2D
 class_name Level
 
+const NEIGHBORS := [
+	Vector2(1, 0),
+	Vector2(-1, 0),
+	Vector2(0, 1),
+	Vector2(0, -1),
+	Vector2(1, 1),
+	Vector2(1, -1),
+	Vector2(-1, 1),
+	Vector2(-1, -1),
+]
+
 const GRID_SIZE := Vector2(16, 16)
 
 @onready var monster: Monster = $Monster
@@ -16,6 +27,12 @@ func _ready() -> void:
 	
 	guard.cell = (guard.position / GRID_SIZE).floor()
 	guard.position = guard.cell * GRID_SIZE
+	print(guard.cell, " ", guard.position)
+
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("interact"):
+		interact()
 
 
 func _process(delta: float) -> void:
@@ -26,7 +43,13 @@ func _process(delta: float) -> void:
 func get_input_direction() -> Vector2:
 	var x := int(Input.is_action_pressed("move_right")) - int(Input.is_action_pressed("move_left"))
 	var y := int(Input.is_action_pressed("move_down")) - int(Input.is_action_pressed("move_up"))
-	return Vector2(x, y).normalized()
+	return Vector2(x, y)
+
+
+func interact() -> void:
+	for n_direction in NEIGHBORS:
+		var n_cell = monster.cell + n_direction
+		# TODO: interact with interactable things!
 
 
 func move_monster(direction: Vector2) -> void:
@@ -35,17 +58,24 @@ func move_monster(direction: Vector2) -> void:
 	
 	var new_cell = monster.cell + direction
 	
-	var is_solid := false
-	var tile_data = tile_map.get_cell_tile_data(collision_layer, new_cell)
-	if tile_data != null:
-		is_solid = tile_data.get_custom_data("Solid") as bool
-	
-	if is_solid:
+	if is_solid(new_cell):
 		return
 	
+	if direction.x and monster.facing.x: direction.y = 0
+	if direction.y and monster.facing.y: direction.x = 0
+	
+	monster.facing = direction
 	monster.cell = monster.cell + direction
 	monster.is_moving = true
 	
 	var tween := get_tree().create_tween()
 	tween.tween_property(monster, "position", monster.cell * GRID_SIZE, 0.15)
 	tween.tween_callback(func(): monster.is_moving = false)
+
+
+func is_solid(cell: Vector2) -> bool:
+	var is_solid := false
+	var tile_data = tile_map.get_cell_tile_data(collision_layer, cell)
+	if tile_data:
+		is_solid = tile_data.get_custom_data("Solid") as bool
+	return is_solid
