@@ -4,6 +4,7 @@ class_name Level
 const GRID_SIZE := Vector2(16, 16)
 
 @onready var monster: Node2D = $Monster
+@onready var tile_map: TileMap = $TileMap
 
 
 func _ready() -> void:
