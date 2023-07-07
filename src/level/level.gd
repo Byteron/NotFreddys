@@ -4,12 +4,18 @@ class_name Level
 const GRID_SIZE := Vector2(16, 16)
 
 @onready var monster: Monster = $Monster
+@onready var guard: Node2D = $Guard
+
 @onready var tile_map: TileMap = $TileMap
 @onready var collision_layer := tile_map.tile_set.get_custom_data_layer_by_name("Solid")
 
 
 func _ready() -> void:
 	monster.cell = (monster.position / GRID_SIZE).floor()
+	monster.position = monster.cell * GRID_SIZE
+	
+	guard.cell = (guard.position / GRID_SIZE).floor()
+	guard.position = guard.cell * GRID_SIZE
 
 
 func _process(delta: float) -> void:

@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://cpqfrkyris6fj"]
+[gd_scene load_steps=5 format=3 uid="uid://cpqfrkyris6fj"]
 
 [ext_resource type="Script" path="res://src/level/level.gd" id="1_5evho"]
 [ext_resource type="PackedScene" uid="uid://w3kx0xop7gfl" path="res://src/monster/monster.tscn" id="2_xi6mj"]
+[ext_resource type="PackedScene" uid="uid://brsfhy0qx11ak" path="res://src/guard/guard.tscn" id="3_hq3pm"]
 
 [sub_resource type="TileSet" id="TileSet_lgcl4"]
 custom_data_layer_0/name = "Solid"
@@ -15,3 +16,7 @@ tile_set = SubResource("TileSet_lgcl4")
 format = 2
 
 [node name="Monster" parent="." instance=ExtResource("2_xi6mj")]
+position = Vector2(16, 184)
+
+[node name="Guard" parent="." instance=ExtResource("3_hq3pm")]
+position = Vector2(592, 184)
