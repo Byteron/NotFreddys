@@ -2,18 +2,18 @@ extends Node2D
 class_name Guard
 
 const LOW_BPM_PHASES := [
-	"meh.",
+	"\"meh.\"",
 	"*yawn*",
 ]
 
 const MEDIUM_BPM_PHASES := [
-	"Huh!",
-	"Uhh ohh..",
+	"\"Huh!\"",
+	"\"Uhh ohh..\"",
 ]
 
 const HIGH_BPM_PHASES := [
-	"AHHHRGH!",
-	"WHAAAA!",
+	"\"AHHHRGH!\"",
+	"\"WHAAAA!\"",
 ]
 
 const LOW_BPM := 90

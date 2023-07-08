@@ -1,0 +1,107 @@
+[gd_scene load_steps=10 format=3 uid="uid://c181cp27wmqkl"]
+
+[ext_resource type="Script" path="res://src/ui/hud.gd" id="1_5rrkt"]
+[ext_resource type="Texture2D" uid="uid://be3c8ir2dh1q7" path="res://assets/images/phone_icons.png" id="1_xdhxf"]
+[ext_resource type="FontFile" uid="uid://cohb8fhadh08s" path="res://assets/fonts/PixelOperatorMono8.ttf" id="2_meid2"]
+[ext_resource type="PackedScene" uid="uid://c77nfwac23mhc" path="res://src/ui/message.tscn" id="3_8mksq"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2cmh5"]
+atlas = ExtResource("1_xdhxf")
+region = Rect2(0, 0, 8, 8)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_r3m81"]
+load_path = "res://.godot/imported/phone_icons.png-4dcb12816f98cf9ea17be016068e9e6c.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cojgf"]
+atlas = SubResource("CompressedTexture2D_r3m81")
+region = Rect2(8, 0, 8, 8)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_vxsta"]
+load_path = "res://.godot/imported/phone_icons.png-4dcb12816f98cf9ea17be016068e9e6c.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_emeba"]
+atlas = SubResource("CompressedTexture2D_vxsta")
+region = Rect2(16, 0, 8, 8)
+
+[node name="HUD" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_5rrkt")
+
+[node name="Texture_Battery" type="TextureRect" parent="."]
+texture_filter = 1
+layout_mode = 0
+offset_left = 464.0
+offset_top = 8.0
+offset_right = 472.0
+offset_bottom = 16.0
+texture = SubResource("AtlasTexture_2cmh5")
+
+[node name="Texture_Message" type="TextureRect" parent="."]
+texture_filter = 1
+layout_mode = 0
+offset_left = 8.0
+offset_top = 254.0
+offset_right = 16.0
+offset_bottom = 262.0
+texture = SubResource("AtlasTexture_cojgf")
+
+[node name="Texture_Heartrate" type="TextureRect" parent="."]
+texture_filter = 1
+layout_mode = 0
+offset_left = 464.0
+offset_top = 254.0
+offset_right = 472.0
+offset_bottom = 262.0
+texture = SubResource("AtlasTexture_emeba")
+
+[node name="Label_Time" type="Label" parent="."]
+texture_filter = 1
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 72.0
+offset_bottom = 19.0
+theme_override_fonts/font = ExtResource("2_meid2")
+theme_override_font_sizes/font_size = 8
+text = "12:00 AM"
+
+[node name="Label_Battery" type="Label" parent="."]
+texture_filter = 1
+layout_mode = 0
+offset_left = 392.0
+offset_top = 8.0
+offset_right = 456.0
+offset_bottom = 19.0
+theme_override_fonts/font = ExtResource("2_meid2")
+theme_override_font_sizes/font_size = 8
+text = "100%"
+horizontal_alignment = 2
+
+[node name="Label_Heartrate" type="Label" parent="."]
+texture_filter = 1
+layout_mode = 0
+offset_left = 392.0
+offset_top = 254.0
+offset_right = 456.0
+offset_bottom = 265.0
+theme_override_fonts/font = ExtResource("2_meid2")
+theme_override_font_sizes/font_size = 8
+text = "100 BPM"
+horizontal_alignment = 2
+
+[node name="VBox_Messages" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 225.0
+offset_right = 392.0
+offset_bottom = 265.0
+theme_override_constants/separation = 0
+alignment = 2
+
+[node name="Label_Message" parent="VBox_Messages" instance=ExtResource("3_8mksq")]
+layout_mode = 2

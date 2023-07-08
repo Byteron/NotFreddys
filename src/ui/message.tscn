@@ -1,0 +1,55 @@
+[gd_scene load_steps=5 format=3 uid="uid://c77nfwac23mhc"]
+
+[ext_resource type="FontFile" uid="uid://cohb8fhadh08s" path="res://assets/fonts/PixelOperatorMono8.ttf" id="1_w1bs5"]
+[ext_resource type="Script" path="res://src/ui/message.gd" id="2_vl3wt"]
+
+[sub_resource type="Animation" id="Animation_4gqli"]
+resource_name = "message"
+length = 5.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible_ratio")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 1.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1, 4, 5),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(0.5, 0.5, 0.5, 1), Color(0.5, 0.5, 0.5, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_l46y5"]
+_data = {
+"message": SubResource("Animation_4gqli")
+}
+
+[node name="Message" type="Label"]
+texture_filter = 1
+offset_right = 368.0
+offset_bottom = 11.0
+theme_override_fonts/font = ExtResource("1_w1bs5")
+theme_override_font_sizes/font_size = 8
+text = "\"Oo er, stop looking at my source code.\""
+visible_characters = 0
+visible_ratio = 0.0
+script = ExtResource("2_vl3wt")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_l46y5")
+}
+
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

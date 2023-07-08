@@ -41,10 +41,7 @@ enum MonsterAction {
 
 @onready var switch_camera_timer: Timer = $SwitchCameraTimer
 
-@onready var charge_label: Label = $CanvasLayer/ChargeLabel
-@onready var bpm_label: Label = $CanvasLayer/BPMLabel
-@onready var time_label: Label = $CanvasLayer/TimeLabel
-@onready var text_box: VBoxContainer = $CanvasLayer/TextBox
+@onready var hud : Control = $CanvasLayer/HUD
 
 @export var battery_scene: PackedScene
 
@@ -153,8 +150,8 @@ func update_time(delta: float) -> void:
 	time += delta * time_scale
 	var hours = time / 60
 	var minutes = int(time) % 60
-	time_label.text = "%02d:%02d AM" % [hours + 12 , snapped(minutes, 5)]
-		
+	hud.set_time(hours + 12 , snapped(minutes, 5))
+
 
 func get_input_direction() -> Vector2:
 	var x := int(Input.is_action_pressed("move_right")) - int(Input.is_action_pressed("move_left"))
@@ -189,7 +186,7 @@ func laugh() -> void:
 
 func update_monster_charge(delta := 0.0) -> void:
 	monster.charge = clamp(monster.charge + delta, 0, Monster.MAX_CHARGE)
-	charge_label.text = "Charge: %d%%" % monster.charge
+	hud.set_battery(monster.charge)
 	
 	if monster.charge <= 0:
 		get_tree().reload_current_scene()
@@ -197,7 +194,7 @@ func update_monster_charge(delta := 0.0) -> void:
 
 func update_bpm(delta := 0.0) -> void:
 	guard.bpm = clamp(guard.bpm + delta * action_multiplier, min_bpm, max_bpm)
-	bpm_label.text = "BPM: %d" % guard.bpm
+	hud.set_heart_rate(guard.bpm)
 	if delta > 0.1:
 		print("Delta: %d, Mult: %d" % [delta, action_multiplier])
 
@@ -242,16 +239,7 @@ func spook_guard(delta: float) -> void:
 	else:
 		phrase = Guard.HIGH_BPM_PHASES.pick_random()
 	
-	if phrase_history.size() == 3:
-		phrase_history.pop_back()
-	
-	phrase_history.push_front(phrase + " (%dx!)" % action_multiplier)
-	
-	var index := 2
-	for p in phrase_history:
-		var label: Label = text_box.get_child(index)
-		label.text = p
-		index -= 1
+	hud.add_message(phrase)
 
 
 func move_monster(direction: Vector2) -> void:
