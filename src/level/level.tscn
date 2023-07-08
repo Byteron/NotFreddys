@@ -24,6 +24,8 @@ bpmrps = -0.25
 camera_connect_time = 4.5
 monster_speed = 0.15
 roomba_speed = 0.2
+start_time = 1080
+time_scale = 2.5
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -45,6 +47,10 @@ offset_left = -40.0
 offset_top = -23.0
 grow_horizontal = 0
 grow_vertical = 0
+
+[node name="TimeLabel" type="Label" parent="CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 23.0
 
 [node name="BatteryTimer" type="Timer" parent="."]
 wait_time = 10.0

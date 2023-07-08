@@ -36,6 +36,7 @@ const GRID_SIZE := Vector2(16, 16)
 
 @onready var charge_label: Label = $CanvasLayer/ChargeLabel
 @onready var bpm_label: Label = $CanvasLayer/BPMLabel
+@onready var time_label: Label = $CanvasLayer/TimeLabel
 
 @export var battery_scene: PackedScene
 
@@ -56,14 +57,20 @@ const GRID_SIZE := Vector2(16, 16)
 @export var monster_speed: float
 @export var roomba_speed: float
 
+@export var start_time: int
+@export var time_scale: float
+
 var active_camera: Cam
 var current_camera: Cam
 
 var intersections: Array[Vector2]
 var solids: Array[Vector2]
 
+var time: float
 
 func _ready() -> void:
+	time = start_time
+
 	monster.cell = (monster.position / GRID_SIZE).floor()
 	monster.position = monster.cell * GRID_SIZE
 	
@@ -98,7 +105,15 @@ func _process(delta: float) -> void:
 	move_monster(direction)
 	move_roomba()
 	update_bpm(bpmrps * delta)
+	update_time(delta)
 
+
+func update_time(delta: float) -> void:
+	time += delta * time_scale
+	var hours = time / 60
+	var minutes = int(time) % 60
+	time_label.text = "%02d:%02d" % [hours, minutes]
+		
 
 func get_input_direction() -> Vector2:
 	var x := int(Input.is_action_pressed("move_right")) - int(Input.is_action_pressed("move_left"))
