@@ -1,34 +1,34 @@
-[gd_scene load_steps=11 format=3 uid="uid://cpqfrkyris6fj"]
+[gd_scene load_steps=8 format=3 uid="uid://cpqfrkyris6fj"]
 
 [ext_resource type="Script" path="res://src/level/level.gd" id="1_5evho"]
 [ext_resource type="PackedScene" uid="uid://bnmtdl41edhgn" path="res://src/level/maze.tscn" id="2_mxshm"]
 [ext_resource type="PackedScene" uid="uid://w3kx0xop7gfl" path="res://src/monster/monster.tscn" id="2_xi6mj"]
 [ext_resource type="PackedScene" uid="uid://brsfhy0qx11ak" path="res://src/guard/guard.tscn" id="3_hq3pm"]
-[ext_resource type="Texture2D" uid="uid://y1pojuur2jt7" path="res://assets/images/hud/laugh.png" id="3_lrgnl"]
 [ext_resource type="PackedScene" uid="uid://cy0xud2cmg30f" path="res://src/cam/cam.tscn" id="4_gaxnp"]
 [ext_resource type="PackedScene" uid="uid://2mrbddcl1wad" path="res://src/battery/battery.tscn" id="6_t2rc0"]
 [ext_resource type="PackedScene" uid="uid://dl82tvvb7yt3t" path="res://src/roomba/roomba.tscn" id="8_o1qqx"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_5esgl"]
-atlas = ExtResource("3_lrgnl")
-region = Rect2(0, 0, 72, 16)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_gfyp0"]
-size = Vector2(48, 48)
-
 [node name="Level" type="Node2D"]
 script = ExtResource("1_5evho")
 battery_scene = ExtResource("6_t2rc0")
-max_batteries = 2
+max_batteries = 3
+charge_per_battery = 25.0
+charge_per_step = -0.25
+charge_per_interaction = -10.0
+charge_per_laugh = -50.0
+charge_per_hit = -20.0
+monster_speed = 0.15
+roomba_speed = 0.2
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="ChargesRect" type="TextureRect" parent="CanvasLayer"]
-texture_filter = 1
-offset_right = 72.0
-offset_bottom = 16.0
-texture = SubResource("AtlasTexture_5esgl")
-stretch_mode = 2
+[node name="ChargeLabel" type="Label" parent="CanvasLayer"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 23.0
+grow_horizontal = 0
 
 [node name="BatteryTimer" type="Timer" parent="."]
 wait_time = 10.0
@@ -42,19 +42,75 @@ position = Vector2(208, 112)
 [node name="Monster" parent="." instance=ExtResource("2_xi6mj")]
 position = Vector2(32, 112)
 
+[node name="Roomba" parent="." instance=ExtResource("8_o1qqx")]
+position = Vector2(384, 128)
+
 [node name="Cams" type="Node2D" parent="."]
 
 [node name="Cam1" parent="Cams" instance=ExtResource("4_gaxnp")]
-position = Vector2(88, 120)
+position = Vector2(120, 80)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Cams/Cam1"]
-shape = SubResource("RectangleShape2D_gfyp0")
+[node name="LightSprite2D" parent="Cams/Cam1" index="0"]
+position = Vector2(-29, 29)
+flip_h = true
+
+[node name="CamSprite2D" parent="Cams/Cam1" index="1"]
+flip_h = true
+
+[node name="CollisionPolygon2D" parent="Cams/Cam1" index="2"]
+polygon = PackedVector2Array(-4, 1, -60, 29, -53, 52, -29, 61, 0, 5)
 
 [node name="Cam2" parent="Cams" instance=ExtResource("4_gaxnp")]
-position = Vector2(344, 120)
+position = Vector2(313, 82)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Cams/Cam2"]
-shape = SubResource("RectangleShape2D_gfyp0")
+[node name="CollisionPolygon2D" parent="Cams/Cam2" index="2"]
+polygon = PackedVector2Array(0, 5, 29, 61, 54, 52, 60, 29, 4, 1)
+
+[node name="Cam3" parent="Cams" instance=ExtResource("4_gaxnp")]
+position = Vector2(120, 17)
+
+[node name="LightSprite2D" parent="Cams/Cam3" index="0"]
+frame = 1
+
+[node name="CollisionPolygon2D" parent="Cams/Cam3" index="2"]
+polygon = PackedVector2Array(0, 5, 29, 62, 29, 31, 63, 31, 4, 1)
+
+[node name="Cam4" parent="Cams" instance=ExtResource("4_gaxnp")]
+position = Vector2(120, 145)
+
+[node name="LightSprite2D" parent="Cams/Cam4" index="0"]
+frame = 2
+
+[node name="CollisionPolygon2D" parent="Cams/Cam4" index="2"]
+polygon = PackedVector2Array(0, 4, 28, 61, 47, 56, 29, 38, 29, 13, 4, 1)
+
+[node name="Cam5" parent="Cams" instance=ExtResource("4_gaxnp")]
+position = Vector2(312, 144)
+
+[node name="LightSprite2D" parent="Cams/Cam5" index="0"]
+position = Vector2(-29, 29)
+flip_h = true
+frame = 2
+
+[node name="CamSprite2D" parent="Cams/Cam5" index="1"]
+flip_h = true
+
+[node name="CollisionPolygon2D" parent="Cams/Cam5" index="2"]
+polygon = PackedVector2Array(-4, 2, -29, 13, -29, 39, -47, 56, -28, 61, 0, 5)
+
+[node name="Cam6" parent="Cams" instance=ExtResource("4_gaxnp")]
+position = Vector2(312, 17)
+
+[node name="LightSprite2D" parent="Cams/Cam6" index="0"]
+position = Vector2(-29, 29)
+flip_h = true
+frame = 1
+
+[node name="CamSprite2D" parent="Cams/Cam6" index="1"]
+flip_h = true
+
+[node name="CollisionPolygon2D" parent="Cams/Cam6" index="2"]
+polygon = PackedVector2Array(-4, 1, -63, 31, -29, 31, -29, 62, 0, 5)
 
 [node name="Batteries" type="Node2D" parent="."]
 
@@ -120,9 +176,14 @@ position = Vector2(216, 40)
 [node name="Marker2D20" type="Marker2D" parent="Intersections"]
 position = Vector2(216, 72)
 
-[node name="Roomba" parent="." instance=ExtResource("8_o1qqx")]
-position = Vector2(384, 128)
-
 [connection signal="timeout" from="BatteryTimer" to="." method="_on_battery_timer_timeout"]
 [connection signal="area_entered" from="Monster" to="." method="_on_monster_area_entered"]
 [connection signal="area_exited" from="Monster" to="." method="_on_monster_area_exited"]
+[connection signal="area_entered" from="Roomba" to="." method="_on_roomba_area_entered"]
+
+[editable path="Cams/Cam1"]
+[editable path="Cams/Cam2"]
+[editable path="Cams/Cam3"]
+[editable path="Cams/Cam4"]
+[editable path="Cams/Cam5"]
+[editable path="Cams/Cam6"]

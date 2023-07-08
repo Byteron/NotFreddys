@@ -31,10 +31,18 @@ const GRID_SIZE := Vector2(16, 16)
 @onready var batteries: Node2D = $Batteries
 @onready var intersections_container: Node2D = $Intersections
 
-@onready var charges_rect: TextureRect = $CanvasLayer/ChargesRect
+@onready var charge_label: Label = $CanvasLayer/ChargeLabel
 
 @export var battery_scene: PackedScene
 @export var max_batteries: int
+@export var charge_per_battery: float
+@export var charge_per_step: float
+@export var charge_per_interaction: float
+@export var charge_per_laugh: float
+@export var charge_per_hit: float
+
+@export var monster_speed: float
+@export var roomba_speed: float
 
 var active_camera: Cam
 var current_camera: Cam
@@ -52,7 +60,7 @@ func _ready() -> void:
 	roomba.cell = (roomba.position / GRID_SIZE).floor()
 	roomba.position = roomba.cell * GRID_SIZE
 	
-	update_monster_charges()
+	update_monster_charge()
 	
 	for marker in intersections_container.get_children():
 		var cell = (marker.position / GRID_SIZE).floor()
@@ -77,20 +85,19 @@ func get_input_direction() -> Vector2:
 
 
 func interact() -> void:
-	if monster.charges == 0:
+	if monster.charge < 0.01:
 		return
 	
-	update_monster_charges(-1)
+	update_monster_charge(-10)
 	
 	for n_direction in DIRECTIONS8:
 		var n_cell = monster.cell + n_direction
 		# TODO: interact with interactable things!
 
 
-func update_monster_charges(delta: int = 0) -> void:
-	monster.charges = clamp(monster.charges + delta, 0, Monster.MAX_CHARGES)
-	var texture := charges_rect.texture as AtlasTexture
-	texture.region.position.x = 72 * monster.charges
+func update_monster_charge(delta := 0.0) -> void:
+	monster.charge = clamp(monster.charge + delta, 0, Monster.MAX_CHARGE)
+	charge_label.text = "Charge: %d%%" % monster.charge
 
 
 func move_monster(direction: Vector2) -> void:
@@ -122,13 +129,15 @@ func move_monster(direction: Vector2) -> void:
 	if not is_walkable(new_cell):
 		return
 	
-	monster.cell = monster.cell + direction
+	monster.cell = new_cell
 	monster.is_moving = true
 	
 	var tween := get_tree().create_tween()
 	tween.set_parallel(false)
-	tween.tween_property(monster, "position", monster.cell * GRID_SIZE, 0.15)
+	tween.tween_property(monster, "position", monster.cell * GRID_SIZE, monster_speed)
 	tween.tween_callback(func(): monster.is_moving = false)
+	
+	update_monster_charge(charge_per_step)
 
 
 func move_roomba() -> void:
@@ -155,7 +164,7 @@ func move_roomba() -> void:
 	
 	var tween := get_tree().create_tween()
 	tween.set_parallel(false)
-	tween.tween_property(roomba, "position", roomba.cell * GRID_SIZE, 0.15)
+	tween.tween_property(roomba, "position", roomba.cell * GRID_SIZE, roomba_speed)
 	tween.tween_callback(func(): roomba.is_moving = false)
 	
 
@@ -214,6 +223,11 @@ func _on_battery_timer_timeout() -> void:
 	
 	battery.area_entered.connect(func(area: Area2D):
 		if area is Monster:
-			update_monster_charges(1)
+			update_monster_charge(charge_per_battery)
 			battery.queue_free()
 	)
+
+
+func _on_roomba_area_entered(area: Area2D) -> void:
+	if area is Monster:
+		update_monster_charge(charge_per_hit)
