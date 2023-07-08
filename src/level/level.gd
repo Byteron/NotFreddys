@@ -118,7 +118,7 @@ func update_time(delta: float) -> void:
 	time += delta * time_scale
 	var hours = time / 60
 	var minutes = int(time) % 60
-	time_label.text = "%02d:%02d" % [hours, minutes]
+	time_label.text = "%02d:%02d" % [hours, snapped(minutes, 5)]
 		
 
 func get_input_direction() -> Vector2:

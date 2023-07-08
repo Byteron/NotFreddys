@@ -25,7 +25,6 @@ bpmrps = -0.25
 camera_connect_time = 4.5
 monster_speed = 0.15
 roomba_speed = 0.2
-start_time = 1080
 time_scale = 2.5
 
 [node name="Camera2D" type="Camera2D" parent="."]
