@@ -43,6 +43,8 @@ enum MonsterAction {
 
 @onready var hud : Control = $CanvasLayer/HUD
 
+@onready var music_controller : Node = $MusicController
+
 @export var battery_scene: PackedScene
 
 @export var max_batteries: int
@@ -112,6 +114,8 @@ func _ready() -> void:
 	
 	randomize()
 	connect_to_camera(randi() % cams.get_child_count())
+	
+	music_controller.start()
 
 
 func _input(event: InputEvent) -> void:
@@ -187,14 +191,19 @@ func laugh() -> void:
 func update_monster_charge(delta := 0.0) -> void:
 	monster.charge = clamp(monster.charge + delta, 0, Monster.MAX_CHARGE)
 	hud.set_battery(monster.charge)
-	
-	if monster.charge <= 0:
-		get_tree().reload_current_scene()
 
 
 func update_bpm(delta := 0.0) -> void:
 	guard.bpm = clamp(guard.bpm + delta * action_multiplier, min_bpm, max_bpm)
 	hud.set_heart_rate(guard.bpm)
+	
+	if guard.bpm < Guard.LOW_BPM:
+		music_controller.switch_to_calm()
+	elif guard.bpm < Guard.MEDIUM_BPM:
+		music_controller.switch_to_caution()
+	else:
+		music_controller.switch_to_panic()
+	
 	if delta > 0.1:
 		print("Delta: %d, Mult: %d" % [delta, action_multiplier])
 

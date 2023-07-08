@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://41lx0bfqbb1v"]
+
+[ext_resource type="Script" path="res://src/level/music_controller.gd" id="1_53ql8"]
+[ext_resource type="AudioStream" uid="uid://dovrcn72oggew" path="res://assets/music/game_calm.ogg" id="1_ym28o"]
+[ext_resource type="AudioStream" uid="uid://cuftdg3jrs0oa" path="res://assets/music/game_caution.ogg" id="2_yk8lg"]
+[ext_resource type="AudioStream" uid="uid://bug07f7ef8rvl" path="res://assets/music/game_panic.ogg" id="3_2upwj"]
+
+[node name="MusicController" type="Node"]
+script = ExtResource("1_53ql8")
+
+[node name="Music_Calm" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("1_ym28o")
+bus = &"BGM"
+
+[node name="Music_Caution" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_yk8lg")
+volume_db = -40.0
+bus = &"BGM"
+
+[node name="Music_Panic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_2upwj")
+volume_db = -40.0
+bus = &"BGM"

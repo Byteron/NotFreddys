@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://cpqfrkyris6fj"]
+[gd_scene load_steps=11 format=3 uid="uid://cpqfrkyris6fj"]
 
 [ext_resource type="Script" path="res://src/level/level.gd" id="1_5evho"]
 [ext_resource type="PackedScene" uid="uid://bnmtdl41edhgn" path="res://src/level/maze.tscn" id="2_mxshm"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://2mrbddcl1wad" path="res://src/battery/battery.tscn" id="6_t2rc0"]
 [ext_resource type="PackedScene" uid="uid://kjvecj3dpliv" path="res://src/noise_trap/noise_trap.tscn" id="8_gk0kt"]
 [ext_resource type="PackedScene" uid="uid://dl82tvvb7yt3t" path="res://src/roomba/roomba.tscn" id="8_o1qqx"]
+[ext_resource type="PackedScene" uid="uid://41lx0bfqbb1v" path="res://src/level/music_controller.tscn" id="10_etlhc"]
 
 [node name="Level" type="Node2D"]
 script = ExtResource("1_5evho")
@@ -278,6 +279,8 @@ position = Vector2(344, 104)
 
 [node name="NoiseTrap" parent="Interactables" instance=ExtResource("8_gk0kt")]
 position = Vector2(360, 104)
+
+[node name="MusicController" parent="." instance=ExtResource("10_etlhc")]
 
 [connection signal="timeout" from="BatteryTimer" to="." method="_on_battery_timer_timeout"]
 [connection signal="timeout" from="SwitchCameraTimer" to="." method="_on_switch_camera_timer_timeout"]
