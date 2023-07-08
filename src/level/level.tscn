@@ -1,11 +1,16 @@
-[gd_scene load_steps=8 format=3 uid="uid://cpqfrkyris6fj"]
+[gd_scene load_steps=10 format=3 uid="uid://cpqfrkyris6fj"]
 
 [ext_resource type="Script" path="res://src/level/level.gd" id="1_5evho"]
 [ext_resource type="PackedScene" uid="uid://bnmtdl41edhgn" path="res://src/level/maze.tscn" id="2_mxshm"]
 [ext_resource type="PackedScene" uid="uid://w3kx0xop7gfl" path="res://src/monster/monster.tscn" id="2_xi6mj"]
 [ext_resource type="PackedScene" uid="uid://brsfhy0qx11ak" path="res://src/guard/guard.tscn" id="3_hq3pm"]
+[ext_resource type="Texture2D" uid="uid://y1pojuur2jt7" path="res://assets/images/hud/laugh.png" id="3_lrgnl"]
 [ext_resource type="PackedScene" uid="uid://cy0xud2cmg30f" path="res://src/cam/cam.tscn" id="4_gaxnp"]
 [ext_resource type="PackedScene" uid="uid://2mrbddcl1wad" path="res://src/battery/battery.tscn" id="6_t2rc0"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5esgl"]
+atlas = ExtResource("3_lrgnl")
+region = Rect2(0, 0, 72, 16)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gfyp0"]
 size = Vector2(48, 48)
@@ -17,9 +22,12 @@ max_batteries = 2
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="ChargesLabel" type="Label" parent="CanvasLayer"]
-offset_right = 40.0
-offset_bottom = 23.0
+[node name="ChargesRect" type="TextureRect" parent="CanvasLayer"]
+texture_filter = 1
+offset_right = 72.0
+offset_bottom = 16.0
+texture = SubResource("AtlasTexture_5esgl")
+stretch_mode = 2
 
 [node name="BatteryTimer" type="Timer" parent="."]
 wait_time = 10.0

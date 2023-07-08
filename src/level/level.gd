@@ -22,7 +22,7 @@ const GRID_SIZE := Vector2(16, 16)
 @onready var cams: Node2D = $Cams
 @onready var batteries: Node2D = $Batteries
 
-@onready var charges_label: Label = $CanvasLayer/ChargesLabel
+@onready var charges_rect: TextureRect = $CanvasLayer/ChargesRect
 
 @export var battery_scene: PackedScene
 @export var max_batteries: int
@@ -31,6 +31,12 @@ var active_camera: Cam
 var current_camera: Cam
 
 
+func update_monster_charges(delta: int = 0) -> void:
+	monster.charges = clamp(monster.charges + delta, 0, Monster.MAX_CHARGES)
+	var texture := charges_rect.texture as AtlasTexture
+	texture.region.position.x = 72 * monster.charges
+	
+
 func _ready() -> void:
 	monster.cell = (monster.position / GRID_SIZE).floor()
 	monster.position = monster.cell * GRID_SIZE
@@ -38,7 +44,7 @@ func _ready() -> void:
 	guard.cell = (guard.position / GRID_SIZE).floor()
 	guard.position = guard.cell * GRID_SIZE
 	
-	charges_label.text = "Charges: %d" % monster.charges
+	update_monster_charges()
 
 
 func _input(event: InputEvent) -> void:
@@ -61,9 +67,7 @@ func interact() -> void:
 	if monster.charges == 0:
 		return
 	
-	monster.charges -= 1
-	
-	charges_label.text = "Charges: %d" % monster.charges
+	update_monster_charges(-1)
 	
 	for n_direction in NEIGHBORS:
 		var n_cell = monster.cell + n_direction
@@ -163,7 +167,6 @@ func _on_battery_timer_timeout() -> void:
 	
 	battery.area_entered.connect(func(area: Area2D):
 		if area is Monster:
-			area.charges = clamp(area.charges + 1, 0, Monster.MAX_CHARGES)
-			charges_label.text = "Charges: %d" % monster.charges
+			update_monster_charges(1)
 			battery.queue_free()
 	)
