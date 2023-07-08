@@ -93,6 +93,7 @@ wait_time = 20.0
 autostart = true
 
 [node name="Maze" parent="." instance=ExtResource("2_mxshm")]
+z_index = -10
 
 [node name="Guard" parent="." instance=ExtResource("3_hq3pm")]
 position = Vector2(208, 112)
