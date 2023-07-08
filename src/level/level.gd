@@ -146,7 +146,29 @@ func connect_to_camera(index: int) -> void:
 	cam.light_sprite.modulate = Color.GREEN
 	cam.light_sprite.modulate.a8 = 80
 	active_camera = cam
-	check_monster_presence_on_active_camera(35)
+	
+	if current_camera != active_camera:
+		return
+	
+	spook_guard(20)
+
+
+func spook_guard(delta: float) -> void:
+	update_bpm(delta)
+	connect_to_camera(-1)
+	switch_camera_timer.start()
+	
+	var phrase: String
+	if guard.bpm < Guard.LOW_BPM:
+		phrase = Guard.LOW_BPM_PHASES.pick_random()
+	elif guard.bpm < Guard.MEDIUM_BPM:
+		phrase = Guard.MEDIUM_BPM_PHASES.pick_random()
+	else:
+		phrase = Guard.HIGH_BPM_PHASES.pick_random()
+	
+	guard.label.text = phrase
+	await get_tree().create_timer(2.5).timeout
+	guard.label.text = ""
 
 
 func move_monster(direction: Vector2) -> void:
@@ -251,16 +273,11 @@ func is_solid(cell: Vector2) -> bool:
 func _on_monster_area_entered(area: Area2D) -> void:
 	if area is Cam:
 		current_camera = area
-		check_monster_presence_on_active_camera(20)
-
-
-func check_monster_presence_on_active_camera(bpm_increase: float):
-	if current_camera != active_camera:
-		return
+		
+		if current_camera != active_camera:
+			return
 	
-	update_bpm(bpm_increase)
-	connect_to_camera(-1)
-	switch_camera_timer.start()
+		spook_guard(12)
 
 
 func _on_monster_area_exited(area: Area2D) -> void:
