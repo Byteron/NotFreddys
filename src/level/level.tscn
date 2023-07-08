@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://cpqfrkyris6fj"]
+[gd_scene load_steps=11 format=3 uid="uid://cpqfrkyris6fj"]
 
 [ext_resource type="Script" path="res://src/level/level.gd" id="1_5evho"]
 [ext_resource type="PackedScene" uid="uid://bnmtdl41edhgn" path="res://src/level/maze.tscn" id="2_mxshm"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://y1pojuur2jt7" path="res://assets/images/hud/laugh.png" id="3_lrgnl"]
 [ext_resource type="PackedScene" uid="uid://cy0xud2cmg30f" path="res://src/cam/cam.tscn" id="4_gaxnp"]
 [ext_resource type="PackedScene" uid="uid://2mrbddcl1wad" path="res://src/battery/battery.tscn" id="6_t2rc0"]
+[ext_resource type="PackedScene" uid="uid://dl82tvvb7yt3t" path="res://src/roomba/roomba.tscn" id="8_o1qqx"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5esgl"]
 atlas = ExtResource("3_lrgnl")
@@ -56,6 +57,71 @@ position = Vector2(344, 120)
 shape = SubResource("RectangleShape2D_gfyp0")
 
 [node name="Batteries" type="Node2D" parent="."]
+
+[node name="Intersections" type="Node2D" parent="."]
+
+[node name="Marker2D" type="Marker2D" parent="Intersections"]
+position = Vector2(136, 72)
+
+[node name="Marker2D2" type="Marker2D" parent="Intersections"]
+position = Vector2(136, 40)
+
+[node name="Marker2D3" type="Marker2D" parent="Intersections"]
+position = Vector2(296, 40)
+
+[node name="Marker2D4" type="Marker2D" parent="Intersections"]
+position = Vector2(296, 72)
+
+[node name="Marker2D5" type="Marker2D" parent="Intersections"]
+position = Vector2(296, 168)
+
+[node name="Marker2D6" type="Marker2D" parent="Intersections"]
+position = Vector2(296, 200)
+
+[node name="Marker2D7" type="Marker2D" parent="Intersections"]
+position = Vector2(136, 200)
+
+[node name="Marker2D8" type="Marker2D" parent="Intersections"]
+position = Vector2(136, 168)
+
+[node name="Marker2D9" type="Marker2D" parent="Intersections"]
+position = Vector2(40, 168)
+
+[node name="Marker2D10" type="Marker2D" parent="Intersections"]
+position = Vector2(40, 72)
+
+[node name="Marker2D11" type="Marker2D" parent="Intersections"]
+position = Vector2(392, 72)
+
+[node name="Marker2D12" type="Marker2D" parent="Intersections"]
+position = Vector2(392, 168)
+
+[node name="Marker2D13" type="Marker2D" parent="Intersections"]
+position = Vector2(216, 200)
+
+[node name="Marker2D14" type="Marker2D" parent="Intersections"]
+position = Vector2(216, 168)
+
+[node name="Marker2D15" type="Marker2D" parent="Intersections"]
+position = Vector2(168, 168)
+
+[node name="Marker2D16" type="Marker2D" parent="Intersections"]
+position = Vector2(168, 72)
+
+[node name="Marker2D17" type="Marker2D" parent="Intersections"]
+position = Vector2(264, 72)
+
+[node name="Marker2D18" type="Marker2D" parent="Intersections"]
+position = Vector2(264, 168)
+
+[node name="Marker2D19" type="Marker2D" parent="Intersections"]
+position = Vector2(216, 40)
+
+[node name="Marker2D20" type="Marker2D" parent="Intersections"]
+position = Vector2(216, 72)
+
+[node name="Roomba" parent="." instance=ExtResource("8_o1qqx")]
+position = Vector2(384, 128)
 
 [connection signal="timeout" from="BatteryTimer" to="." method="_on_battery_timer_timeout"]
 [connection signal="area_entered" from="Monster" to="." method="_on_monster_area_entered"]

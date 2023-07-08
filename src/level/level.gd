@@ -1,7 +1,14 @@
 extends Node2D
 class_name Level
 
-const NEIGHBORS := [
+const DIRECTIONS4 := [
+	Vector2(1, 0),
+	Vector2(-1, 0),
+	Vector2(0, 1),
+	Vector2(0, -1),
+]
+
+const DIRECTIONS8 := [
 	Vector2(1, 0),
 	Vector2(-1, 0),
 	Vector2(0, 1),
@@ -16,11 +23,13 @@ const GRID_SIZE := Vector2(16, 16)
 
 @onready var monster: Monster = $Monster
 @onready var guard: Node2D = $Guard
+@onready var roomba: Area2D = $Roomba
 
 @onready var tile_map: TileMap = $Maze
 
 @onready var cams: Node2D = $Cams
 @onready var batteries: Node2D = $Batteries
+@onready var intersections_container: Node2D = $Intersections
 
 @onready var charges_rect: TextureRect = $CanvasLayer/ChargesRect
 
@@ -30,11 +39,7 @@ const GRID_SIZE := Vector2(16, 16)
 var active_camera: Cam
 var current_camera: Cam
 
-
-func update_monster_charges(delta: int = 0) -> void:
-	monster.charges = clamp(monster.charges + delta, 0, Monster.MAX_CHARGES)
-	var texture := charges_rect.texture as AtlasTexture
-	texture.region.position.x = 72 * monster.charges
+var intersections: Array[Vector2]
 	
 
 func _ready() -> void:
@@ -44,7 +49,14 @@ func _ready() -> void:
 	guard.cell = (guard.position / GRID_SIZE).floor()
 	guard.position = guard.cell * GRID_SIZE
 	
+	roomba.cell = (roomba.position / GRID_SIZE).floor()
+	roomba.position = roomba.cell * GRID_SIZE
+	
 	update_monster_charges()
+	
+	for marker in intersections_container.get_children():
+		var cell = (marker.position / GRID_SIZE).floor()
+		intersections.append(cell)
 
 
 func _input(event: InputEvent) -> void:
@@ -55,6 +67,7 @@ func _input(event: InputEvent) -> void:
 func _process(delta: float) -> void:
 	var direction := get_input_direction()
 	move_monster(direction)
+	move_roomba()
 
 
 func get_input_direction() -> Vector2:
@@ -69,9 +82,15 @@ func interact() -> void:
 	
 	update_monster_charges(-1)
 	
-	for n_direction in NEIGHBORS:
+	for n_direction in DIRECTIONS8:
 		var n_cell = monster.cell + n_direction
 		# TODO: interact with interactable things!
+
+
+func update_monster_charges(delta: int = 0) -> void:
+	monster.charges = clamp(monster.charges + delta, 0, Monster.MAX_CHARGES)
+	var texture := charges_rect.texture as AtlasTexture
+	texture.region.position.x = 72 * monster.charges
 
 
 func move_monster(direction: Vector2) -> void:
@@ -112,8 +131,36 @@ func move_monster(direction: Vector2) -> void:
 	tween.tween_callback(func(): monster.is_moving = false)
 
 
+func move_roomba() -> void:
+	if roomba.is_moving:
+		return
+	
+	if not roomba.facing or roomba.cell in intersections:
+		var directions: Array[Vector2]
+		for n_dir in DIRECTIONS4:
+			var n_cell = roomba.cell + n_dir
+			
+			if not is_walkable(n_cell):
+				continue
+			
+			if n_dir == -roomba.facing:
+				continue
+			
+			directions.append(n_dir)
+		var dir = directions.pick_random()
+		roomba.facing = dir
+	
+	roomba.cell = roomba.cell + roomba.facing
+	roomba.is_moving = true
+	
+	var tween := get_tree().create_tween()
+	tween.set_parallel(false)
+	tween.tween_property(roomba, "position", roomba.cell * GRID_SIZE, 0.15)
+	tween.tween_callback(func(): roomba.is_moving = false)
+	
+
 func is_walkable(cell: Vector2) -> bool:
-	for n_direction in NEIGHBORS:
+	for n_direction in DIRECTIONS8:
 		var n_cell = guard.cell + n_direction
 		if cell == n_cell:
 			return false

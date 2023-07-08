@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://dl82tvvb7yt3t"]
+
+[ext_resource type="Script" path="res://src/roomba/roomba.gd" id="1_a27j1"]
+[ext_resource type="Texture2D" uid="uid://bxp488edxaepe" path="res://assets/images/vacuum.png" id="2_gqpk5"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e0yoo"]
+size = Vector2(8, 8)
+
+[node name="Roomba" type="Area2D"]
+script = ExtResource("1_a27j1")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("2_gqpk5")
+centered = false
+hframes = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(8, 8)
+shape = SubResource("RectangleShape2D_e0yoo")
