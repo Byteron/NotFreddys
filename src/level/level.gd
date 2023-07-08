@@ -32,15 +32,26 @@ const GRID_SIZE := Vector2(16, 16)
 @onready var intersections_container: Node2D = $Intersections
 @onready var solids_container: Node2D = $Solids
 
+@onready var switch_camera_timer: Timer = $SwitchCameraTimer
+
 @onready var charge_label: Label = $CanvasLayer/ChargeLabel
+@onready var bpm_label: Label = $CanvasLayer/BPMLabel
 
 @export var battery_scene: PackedScene
+
 @export var max_batteries: int
 @export var charge_per_battery: float
 @export var charge_per_step: float
 @export var charge_per_interaction: float
 @export var charge_per_laugh: float
 @export var charge_per_hit: float
+
+@export var start_bpm: float
+@export var min_bpm: float
+@export var max_bpm: float
+@export var bpmrps: float
+
+@export var camera_connect_time: float
 
 @export var monster_speed: float
 @export var roomba_speed: float
@@ -57,6 +68,7 @@ func _ready() -> void:
 	
 	guard.cell = (guard.position / GRID_SIZE).floor()
 	guard.position = guard.cell * GRID_SIZE
+	guard.bpm = start_bpm
 	
 	roomba.cell = (roomba.position / GRID_SIZE).floor()
 	roomba.position = roomba.cell * GRID_SIZE
@@ -70,7 +82,8 @@ func _ready() -> void:
 	for marker in solids_container.get_children():
 		var cell = (marker.position / GRID_SIZE).floor()
 		solids.append(cell)
-
+	
+	connect_to_camera(0)
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact"):
@@ -81,6 +94,7 @@ func _process(delta: float) -> void:
 	var direction := get_input_direction()
 	move_monster(direction)
 	move_roomba()
+	update_bpm(bpmrps * delta)
 
 
 func get_input_direction() -> Vector2:
@@ -103,6 +117,33 @@ func interact() -> void:
 func update_monster_charge(delta := 0.0) -> void:
 	monster.charge = clamp(monster.charge + delta, 0, Monster.MAX_CHARGE)
 	charge_label.text = "Charge: %d%%" % monster.charge
+
+
+func update_bpm(delta := 0.0) -> void:
+	guard.bpm = clamp(guard.bpm + delta, min_bpm, max_bpm)
+	bpm_label.text = "BPM: %d" % guard.bpm
+
+
+func connect_to_camera(index: int) -> void:
+	if active_camera:
+		active_camera.cam_sprite.frame = 0
+		active_camera.light_sprite.modulate = Color.WHITE
+		active_camera.light_sprite.modulate.a8 = 20
+		active_camera = null
+	
+	if index == -1:
+		return
+	
+	var cam: Cam = cams.get_child(index)
+	cam.cam_sprite.frame = 1
+	cam.light_sprite.modulate = Color.WHEAT
+	cam.light_sprite.modulate.a8 = 80
+	await get_tree().create_timer(camera_connect_time).timeout
+	cam.cam_sprite.frame = 2
+	cam.light_sprite.modulate = Color.GREEN
+	cam.light_sprite.modulate.a8 = 80
+	active_camera = cam
+	check_monster_presence_on_active_camera(35)
 
 
 func move_monster(direction: Vector2) -> void:
@@ -207,7 +248,16 @@ func is_solid(cell: Vector2) -> bool:
 func _on_monster_area_entered(area: Area2D) -> void:
 	if area is Cam:
 		current_camera = area
-		print(current_camera.index)
+		check_monster_presence_on_active_camera(20)
+
+
+func check_monster_presence_on_active_camera(bpm_increase: float):
+	if current_camera != active_camera:
+		return
+	
+	update_bpm(bpm_increase)
+	connect_to_camera(-1)
+	switch_camera_timer.start()
 
 
 func _on_monster_area_exited(area: Area2D) -> void:
@@ -239,3 +289,16 @@ func _on_battery_timer_timeout() -> void:
 func _on_roomba_area_entered(area: Area2D) -> void:
 	if area is Monster:
 		update_monster_charge(charge_per_hit)
+
+
+func _on_switch_camera_timer_timeout() -> void:
+	var indices: Array[int]
+	for i in cams.get_child_count():
+		indices.append(i)
+	
+	if active_camera:
+		indices.erase(active_camera.index)
+	
+	var index: int = indices.pick_random()
+	
+	connect_to_camera(index)

@@ -17,6 +17,11 @@ charge_per_step = -0.25
 charge_per_interaction = -10.0
 charge_per_laugh = -50.0
 charge_per_hit = -20.0
+start_bpm = 75.0
+min_bpm = 60.0
+max_bpm = 160.0
+bpmrps = -0.25
+camera_connect_time = 4.5
 monster_speed = 0.15
 roomba_speed = 0.2
 
@@ -30,8 +35,23 @@ offset_left = -40.0
 offset_bottom = 23.0
 grow_horizontal = 0
 
+[node name="BPMLabel" type="Label" parent="CanvasLayer"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -23.0
+grow_horizontal = 0
+grow_vertical = 0
+
 [node name="BatteryTimer" type="Timer" parent="."]
 wait_time = 10.0
+autostart = true
+
+[node name="SwitchCameraTimer" type="Timer" parent="."]
+wait_time = 20.0
 autostart = true
 
 [node name="Maze" parent="." instance=ExtResource("2_mxshm")]
@@ -218,6 +238,7 @@ position = Vector2(344, 120)
 position = Vector2(344, 104)
 
 [connection signal="timeout" from="BatteryTimer" to="." method="_on_battery_timer_timeout"]
+[connection signal="timeout" from="SwitchCameraTimer" to="." method="_on_switch_camera_timer_timeout"]
 [connection signal="area_entered" from="Monster" to="." method="_on_monster_area_entered"]
 [connection signal="area_exited" from="Monster" to="." method="_on_monster_area_exited"]
 [connection signal="area_entered" from="Roomba" to="." method="_on_roomba_area_entered"]
