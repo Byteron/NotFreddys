@@ -44,6 +44,7 @@ enum MonsterAction {
 @onready var charge_label: Label = $CanvasLayer/ChargeLabel
 @onready var bpm_label: Label = $CanvasLayer/BPMLabel
 @onready var time_label: Label = $CanvasLayer/TimeLabel
+@onready var text_box: VBoxContainer = $CanvasLayer/TextBox
 
 @export var battery_scene: PackedScene
 
@@ -81,6 +82,8 @@ var time: float
 
 var action_history: Array[int]
 var action_multiplier: float
+
+var phrase_history: Array[String]
 
 
 func _ready() -> void:
@@ -239,9 +242,16 @@ func spook_guard(delta: float) -> void:
 	else:
 		phrase = Guard.HIGH_BPM_PHASES.pick_random()
 	
-	guard.label.text = phrase
-	await get_tree().create_timer(2.5).timeout
-	guard.label.text = ""
+	if phrase_history.size() == 3:
+		phrase_history.pop_back()
+	
+	phrase_history.push_front(phrase + " (%dx!)" % action_multiplier)
+	
+	var index := 2
+	for p in phrase_history:
+		var label: Label = text_box.get_child(index)
+		label.text = p
+		index -= 1
 
 
 func move_monster(direction: Vector2) -> void:

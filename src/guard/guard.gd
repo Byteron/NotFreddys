@@ -21,5 +21,3 @@ const MEDIUM_BPM := 120
 
 var cell: Vector2
 var bpm: float
-
-@onready var label: Label = $Label
