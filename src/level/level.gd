@@ -21,6 +21,12 @@ const DIRECTIONS8 := [
 
 const GRID_SIZE := Vector2(16, 16)
 
+enum MonsterAction {
+	Appear,
+	Laugh,
+	Interact,
+}
+
 @onready var monster: Monster = $Monster
 @onready var guard: Node2D = $Guard
 @onready var roomba: Area2D = $Roomba
@@ -52,7 +58,10 @@ const GRID_SIZE := Vector2(16, 16)
 @export var min_bpm: float
 @export var max_bpm: float
 @export var bpmrps: float
-
+@export var bpm_per_laugh: float
+@export var bpm_per_interact: float
+@export var bpm_per_appear: float
+@export var bpm_per_appear_better: float
 @export var camera_connect_time: float
 
 @export var monster_speed: float
@@ -69,6 +78,10 @@ var solids: Array[Vector2]
 var interactables: Dictionary
 
 var time: float
+
+var action_history: Array[int]
+var action_multiplier: float
+
 
 func _ready() -> void:
 	time = start_time
@@ -104,6 +117,9 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact"):
 		interact()
+	
+	if event.is_action_pressed("laugh"):
+		laugh()
 
 
 func _process(delta: float) -> void:
@@ -114,11 +130,27 @@ func _process(delta: float) -> void:
 	update_time(delta)
 
 
+func push_action_history(action: MonsterAction) -> void:
+	if action_history.size() == 3:
+		action_history.pop_front()
+	
+	action_history.append(action)
+	
+	var count: int
+	var visited: Array[int]
+	for a in action_history:
+		if not a in visited:
+			count += 1
+		visited.append(a)
+	
+	action_multiplier = count
+
+
 func update_time(delta: float) -> void:
 	time += delta * time_scale
 	var hours = time / 60
 	var minutes = int(time) % 60
-	time_label.text = "%02d:%02d" % [hours, snapped(minutes, 5)]
+	time_label.text = "%02d:%02d AM" % [hours + 12 , snapped(minutes, 5)]
 		
 
 func get_input_direction() -> Vector2:
@@ -131,7 +163,7 @@ func interact() -> void:
 	if monster.charge < 0.01:
 		return
 	
-	update_monster_charge(-10)
+	update_monster_charge(charge_per_interaction)
 	
 	for n_direction in DIRECTIONS8:
 		var n_cell = monster.cell + n_direction
@@ -139,20 +171,32 @@ func interact() -> void:
 		if n_cell in interactables:
 			var interactable: NoiseTrap = interactables[n_cell]
 			interactable.anim.play("on")
-			spook_guard(10)
+			push_action_history(MonsterAction.Interact)
+			spook_guard(bpm_per_interact)
 			await get_tree().create_timer(2.5).timeout
 			interactable.anim.play("off")
 			return
 
 
+func laugh() -> void:
+	update_monster_charge(charge_per_laugh)
+	push_action_history(MonsterAction.Laugh)
+	spook_guard(bpm_per_laugh)
+
+
 func update_monster_charge(delta := 0.0) -> void:
 	monster.charge = clamp(monster.charge + delta, 0, Monster.MAX_CHARGE)
 	charge_label.text = "Charge: %d%%" % monster.charge
+	
+	if monster.charge <= 0:
+		get_tree().reload_current_scene()
 
 
 func update_bpm(delta := 0.0) -> void:
-	guard.bpm = clamp(guard.bpm + delta, min_bpm, max_bpm)
+	guard.bpm = clamp(guard.bpm + delta * action_multiplier, min_bpm, max_bpm)
 	bpm_label.text = "BPM: %d" % guard.bpm
+	if delta > 0.1:
+		print("Delta: %d, Mult: %d" % [delta, action_multiplier])
 
 
 func connect_to_camera(index: int) -> void:
@@ -178,7 +222,8 @@ func connect_to_camera(index: int) -> void:
 	if current_camera != active_camera:
 		return
 	
-	spook_guard(20)
+	push_action_history(MonsterAction.Appear)
+	spook_guard(bpm_per_appear_better)
 
 
 func spook_guard(delta: float) -> void:
@@ -305,7 +350,8 @@ func _on_monster_area_entered(area: Area2D) -> void:
 		if current_camera != active_camera:
 			return
 	
-		spook_guard(12)
+		push_action_history(MonsterAction.Appear)
+		spook_guard(bpm_per_appear)
 
 
 func _on_monster_area_exited(area: Area2D) -> void:
