@@ -176,6 +176,47 @@ position = Vector2(216, 40)
 [node name="Marker2D20" type="Marker2D" parent="Intersections"]
 position = Vector2(216, 72)
 
+[node name="Solids" type="Node2D" parent="."]
+
+[node name="Marker2D" type="Marker2D" parent="Solids"]
+position = Vector2(72, 136)
+
+[node name="Marker2D2" type="Marker2D" parent="Solids"]
+position = Vector2(72, 96)
+
+[node name="Marker2D3" type="Marker2D" parent="Solids"]
+position = Vector2(88, 96)
+
+[node name="Marker2D4" type="Marker2D" parent="Solids"]
+position = Vector2(104, 96)
+
+[node name="Marker2D7" type="Marker2D" parent="Solids"]
+position = Vector2(200, 96)
+
+[node name="Marker2D8" type="Marker2D" parent="Solids"]
+position = Vector2(216, 96)
+
+[node name="Marker2D9" type="Marker2D" parent="Solids"]
+position = Vector2(232, 96)
+
+[node name="Marker2D10" type="Marker2D" parent="Solids"]
+position = Vector2(328, 104)
+
+[node name="Marker2D11" type="Marker2D" parent="Solids"]
+position = Vector2(328, 120)
+
+[node name="Marker2D12" type="Marker2D" parent="Solids"]
+position = Vector2(328, 136)
+
+[node name="Marker2D13" type="Marker2D" parent="Solids"]
+position = Vector2(344, 136)
+
+[node name="Marker2D14" type="Marker2D" parent="Solids"]
+position = Vector2(344, 120)
+
+[node name="Marker2D15" type="Marker2D" parent="Solids"]
+position = Vector2(344, 104)
+
 [connection signal="timeout" from="BatteryTimer" to="." method="_on_battery_timer_timeout"]
 [connection signal="area_entered" from="Monster" to="." method="_on_monster_area_entered"]
 [connection signal="area_exited" from="Monster" to="." method="_on_monster_area_exited"]

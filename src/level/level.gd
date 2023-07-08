@@ -30,6 +30,7 @@ const GRID_SIZE := Vector2(16, 16)
 @onready var cams: Node2D = $Cams
 @onready var batteries: Node2D = $Batteries
 @onready var intersections_container: Node2D = $Intersections
+@onready var solids_container: Node2D = $Solids
 
 @onready var charge_label: Label = $CanvasLayer/ChargeLabel
 
@@ -48,7 +49,7 @@ var active_camera: Cam
 var current_camera: Cam
 
 var intersections: Array[Vector2]
-	
+var solids: Array[Vector2]
 
 func _ready() -> void:
 	monster.cell = (monster.position / GRID_SIZE).floor()
@@ -65,6 +66,10 @@ func _ready() -> void:
 	for marker in intersections_container.get_children():
 		var cell = (marker.position / GRID_SIZE).floor()
 		intersections.append(cell)
+	
+	for marker in solids_container.get_children():
+		var cell = (marker.position / GRID_SIZE).floor()
+		solids.append(cell)
 
 
 func _input(event: InputEvent) -> void:
@@ -186,6 +191,9 @@ func is_walkable(cell: Vector2) -> bool:
 
 func is_solid(cell: Vector2) -> bool:
 	if cell == guard.cell or cell == monster.cell:
+		return true
+	
+	if cell in solids:
 		return true
 	
 	var solid := false
