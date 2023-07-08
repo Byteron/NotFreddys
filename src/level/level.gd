@@ -62,6 +62,7 @@ var current_camera: Cam
 var intersections: Array[Vector2]
 var solids: Array[Vector2]
 
+
 func _ready() -> void:
 	monster.cell = (monster.position / GRID_SIZE).floor()
 	monster.position = monster.cell * GRID_SIZE
@@ -83,7 +84,9 @@ func _ready() -> void:
 		var cell = (marker.position / GRID_SIZE).floor()
 		solids.append(cell)
 	
-	connect_to_camera(0)
+	randomize()
+	connect_to_camera(randi() % cams.get_child_count())
+
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact"):
@@ -262,7 +265,7 @@ func check_monster_presence_on_active_camera(bpm_increase: float):
 
 func _on_monster_area_exited(area: Area2D) -> void:
 	current_camera = null
-	print("-1")
+
 
 func _on_battery_timer_timeout() -> void:
 	if batteries.get_child_count() >= max_batteries:
