@@ -1,0 +1,70 @@
+[gd_scene load_steps=7 format=3 uid="uid://kjvecj3dpliv"]
+
+[ext_resource type="Script" path="res://src/noise_trap/noise_trap.gd" id="1_1b6l7"]
+[ext_resource type="Texture2D" uid="uid://dyq1t7ej1ggwl" path="res://assets/images/tv.png" id="2_2qvey"]
+
+[sub_resource type="Animation" id="Animation_pkdef"]
+resource_name = "off"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_8djan"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_uqw2h"]
+resource_name = "on"
+length = 0.4
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [1, 2, 3, 4]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_4h0of"]
+_data = {
+"RESET": SubResource("Animation_8djan"),
+"off": SubResource("Animation_pkdef"),
+"on": SubResource("Animation_uqw2h")
+}
+
+[node name="NoiseTrap" type="Marker2D"]
+script = ExtResource("1_1b6l7")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_2qvey")
+hframes = 5
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_4h0of")
+}

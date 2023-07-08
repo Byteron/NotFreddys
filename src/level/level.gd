@@ -31,6 +31,7 @@ const GRID_SIZE := Vector2(16, 16)
 @onready var batteries: Node2D = $Batteries
 @onready var intersections_container: Node2D = $Intersections
 @onready var solids_container: Node2D = $Solids
+@onready var interactables_container: Node2D = $Interactables
 
 @onready var switch_camera_timer: Timer = $SwitchCameraTimer
 
@@ -65,6 +66,7 @@ var current_camera: Cam
 
 var intersections: Array[Vector2]
 var solids: Array[Vector2]
+var interactables: Dictionary
 
 var time: float
 
@@ -90,6 +92,10 @@ func _ready() -> void:
 	for marker in solids_container.get_children():
 		var cell = (marker.position / GRID_SIZE).floor()
 		solids.append(cell)
+	
+	for interactable in interactables_container.get_children():
+		var cell = (interactable.position / GRID_SIZE).floor()
+		interactables[cell] = interactable
 	
 	randomize()
 	connect_to_camera(randi() % cams.get_child_count())
@@ -129,7 +135,14 @@ func interact() -> void:
 	
 	for n_direction in DIRECTIONS8:
 		var n_cell = monster.cell + n_direction
-		# TODO: interact with interactable things!
+		
+		if n_cell in interactables:
+			var interactable: NoiseTrap = interactables[n_cell]
+			interactable.anim.play("on")
+			spook_guard(10)
+			await get_tree().create_timer(2.5).timeout
+			interactable.anim.play("off")
+			return
 
 
 func update_monster_charge(delta := 0.0) -> void:

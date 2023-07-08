@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cpqfrkyris6fj"]
+[gd_scene load_steps=9 format=3 uid="uid://cpqfrkyris6fj"]
 
 [ext_resource type="Script" path="res://src/level/level.gd" id="1_5evho"]
 [ext_resource type="PackedScene" uid="uid://bnmtdl41edhgn" path="res://src/level/maze.tscn" id="2_mxshm"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://brsfhy0qx11ak" path="res://src/guard/guard.tscn" id="3_hq3pm"]
 [ext_resource type="PackedScene" uid="uid://cy0xud2cmg30f" path="res://src/cam/cam.tscn" id="4_gaxnp"]
 [ext_resource type="PackedScene" uid="uid://2mrbddcl1wad" path="res://src/battery/battery.tscn" id="6_t2rc0"]
+[ext_resource type="PackedScene" uid="uid://kjvecj3dpliv" path="res://src/noise_trap/noise_trap.tscn" id="8_gk0kt"]
 [ext_resource type="PackedScene" uid="uid://dl82tvvb7yt3t" path="res://src/roomba/roomba.tscn" id="8_o1qqx"]
 
 [node name="Level" type="Node2D"]
@@ -245,6 +246,11 @@ position = Vector2(344, 120)
 
 [node name="Marker2D15" type="Marker2D" parent="Solids"]
 position = Vector2(344, 104)
+
+[node name="Interactables" type="Node2D" parent="."]
+
+[node name="NoiseTrap" parent="Interactables" instance=ExtResource("8_gk0kt")]
+position = Vector2(360, 104)
 
 [connection signal="timeout" from="BatteryTimer" to="." method="_on_battery_timer_timeout"]
 [connection signal="timeout" from="SwitchCameraTimer" to="." method="_on_switch_camera_timer_timeout"]
