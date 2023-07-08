@@ -14,11 +14,11 @@ script = ExtResource("1_5evho")
 
 [node name="Maze" parent="." instance=ExtResource("2_mxshm")]
 
-[node name="Monster" parent="." instance=ExtResource("2_xi6mj")]
-position = Vector2(32, 112)
-
 [node name="Guard" parent="." instance=ExtResource("3_hq3pm")]
 position = Vector2(208, 112)
+
+[node name="Monster" parent="." instance=ExtResource("2_xi6mj")]
+position = Vector2(32, 112)
 
 [node name="Cams" type="Node2D" parent="."]
 

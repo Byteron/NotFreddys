@@ -57,6 +57,10 @@ func interact() -> void:
 
 
 func move_monster(direction: Vector2) -> void:
+	if not direction and not monster.is_moving:
+		monster.anim.stop()
+		monster.anim.seek(0, true)
+	
 	if not direction or monster.is_moving:
 		return
 	
@@ -72,7 +76,20 @@ func move_monster(direction: Vector2) -> void:
 	monster.cell = monster.cell + direction
 	monster.is_moving = true
 	
+	match monster.facing:
+		Vector2.UP:
+			monster.anim.play("walk_up")
+		Vector2.DOWN:
+			monster.anim.play("walk_down")
+		Vector2.LEFT:
+			monster.anim.play("walk_side")
+			monster.sprite.flip_h = false
+		Vector2.RIGHT:
+			monster.anim.play("walk_side")
+			monster.sprite.flip_h = true
+	
 	var tween := get_tree().create_tween()
+	tween.set_parallel(false)
 	tween.tween_property(monster, "position", monster.cell * GRID_SIZE, 0.15)
 	tween.tween_callback(func(): monster.is_moving = false)
 
