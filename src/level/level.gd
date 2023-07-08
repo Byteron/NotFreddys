@@ -95,6 +95,9 @@ func move_monster(direction: Vector2) -> void:
 
 
 func is_solid(cell: Vector2) -> bool:
+	if cell == guard.cell:
+		return true
+	
 	var is_solid := false
 	var tile_data = tile_map.get_cell_tile_data(collision_layer, cell)
 	if tile_data:
