@@ -64,18 +64,12 @@ func move_monster(direction: Vector2) -> void:
 	if not direction or monster.is_moving:
 		return
 	
-	var new_cell = monster.cell + direction
-	
-	if is_solid(new_cell):
-		return
-	
 	if direction.x and monster.facing.x: direction.y = 0
 	if direction.y and monster.facing.y: direction.x = 0
 	
-	monster.facing = direction
-	monster.cell = monster.cell + direction
-	monster.is_moving = true
+	var new_cell = monster.cell + direction
 	
+	monster.facing = direction
 	match monster.facing:
 		Vector2.UP:
 			monster.anim.play("walk_up")
@@ -87,6 +81,12 @@ func move_monster(direction: Vector2) -> void:
 		Vector2.RIGHT:
 			monster.anim.play("walk_side")
 			monster.sprite.flip_h = true
+	
+	if is_solid(new_cell):
+		return
+	
+	monster.cell = monster.cell + direction
+	monster.is_moving = true
 	
 	var tween := get_tree().create_tween()
 	tween.set_parallel(false)
