@@ -27,6 +27,9 @@ roomba_speed = 0.2
 start_time = 1080
 time_scale = 2.5
 
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(216, 120)
+
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="ChargeLabel" type="Label" parent="CanvasLayer"]
