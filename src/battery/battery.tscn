@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://2mrbddcl1wad"]
+
+[ext_resource type="Script" path="res://src/battery/battery.gd" id="1_35n1b"]
+[ext_resource type="Texture2D" uid="uid://bv6nogib4puun" path="res://assets/images/battery.png" id="2_1bafd"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fxv8g"]
+size = Vector2(8, 8)
+
+[node name="Battery" type="Area2D"]
+script = ExtResource("1_35n1b")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("2_1bafd")
+centered = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(8, 8)
+shape = SubResource("RectangleShape2D_fxv8g")

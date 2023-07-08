@@ -18,9 +18,14 @@ const GRID_SIZE := Vector2(16, 16)
 @onready var guard: Node2D = $Guard
 
 @onready var tile_map: TileMap = $Maze
-@onready var collision_layer := tile_map.tile_set.get_custom_data_layer_by_name("Solid")
 
 @onready var cams: Node2D = $Cams
+@onready var batteries: Node2D = $Batteries
+
+@onready var charges_label: Label = $CanvasLayer/ChargesLabel
+
+@export var battery_scene: PackedScene
+@export var max_batteries: int
 
 var active_camera: Cam
 var current_camera: Cam
@@ -33,6 +38,8 @@ func _ready() -> void:
 	guard.cell = (guard.position / GRID_SIZE).floor()
 	guard.position = guard.cell * GRID_SIZE
 	
+	charges_label.text = "Charges: %d" % monster.charges
+
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact"):
@@ -51,6 +58,13 @@ func get_input_direction() -> Vector2:
 
 
 func interact() -> void:
+	if monster.charges == 0:
+		return
+	
+	monster.charges -= 1
+	
+	charges_label.text = "Charges: %d" % monster.charges
+	
 	for n_direction in NEIGHBORS:
 		var n_cell = monster.cell + n_direction
 		# TODO: interact with interactable things!
@@ -82,7 +96,7 @@ func move_monster(direction: Vector2) -> void:
 			monster.anim.play("walk_side")
 			monster.sprite.flip_h = true
 	
-	if is_solid(new_cell):
+	if not is_walkable(new_cell):
 		return
 	
 	monster.cell = monster.cell + direction
@@ -94,15 +108,32 @@ func move_monster(direction: Vector2) -> void:
 	tween.tween_callback(func(): monster.is_moving = false)
 
 
+func is_walkable(cell: Vector2) -> bool:
+	for n_direction in NEIGHBORS:
+		var n_cell = guard.cell + n_direction
+		if cell == n_cell:
+			return false
+	
+	var solid := is_solid(cell)
+	var walkable := false
+	
+	var floor_data = tile_map.get_cell_tile_data(1, cell)
+	if floor_data:
+		walkable = floor_data.get_custom_data("Walkable") as bool
+
+	return walkable and not solid
+
+
 func is_solid(cell: Vector2) -> bool:
-	if cell == guard.cell:
+	if cell == guard.cell or cell == monster.cell:
 		return true
 	
-	var is_solid := false
-	var tile_data = tile_map.get_cell_tile_data(collision_layer, cell)
-	if tile_data:
-		is_solid = tile_data.get_custom_data("Solid") as bool
-	return is_solid
+	var solid := false
+	
+	var wall_data = tile_map.get_cell_tile_data(0, cell)
+	if wall_data:
+		solid = wall_data.get_custom_data("Solid") as bool
+	return solid
 
 
 func _on_monster_area_entered(area: Area2D) -> void:
@@ -113,4 +144,26 @@ func _on_monster_area_entered(area: Area2D) -> void:
 
 func _on_monster_area_exited(area: Area2D) -> void:
 	current_camera = null
-	print("null")
+	print("-1")
+
+func _on_battery_timer_timeout() -> void:
+	if batteries.get_child_count() >= max_batteries:
+		return
+	
+	var battery := battery_scene.instantiate() as Battery
+	var cells = tile_map.get_used_cells(1)
+	for i in range(cells.size() -1, -1, -1):
+		var cell = cells[i]
+		if not is_walkable(cell):
+			cells.erase(cell)
+	
+	var cell = cells.pick_random()
+	battery.position = Vector2(cell.x, cell.y) * GRID_SIZE
+	batteries.add_child(battery)
+	
+	battery.area_entered.connect(func(area: Area2D):
+		if area is Monster:
+			area.charges = clamp(area.charges + 1, 0, Monster.MAX_CHARGES)
+			charges_label.text = "Charges: %d" % monster.charges
+			battery.queue_free()
+	)
