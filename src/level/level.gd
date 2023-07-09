@@ -209,7 +209,7 @@ func interact() -> void:
 			push_action_history(MonsterAction.INTERACT)
 			spook_guard(bpm_per_interact)
 			var timer = get_tree().create_timer(7.36)
-			Sfx.play("TVDisturbance")
+			Sfx.play(interactable.sfx_name)
 			timer.timeout.connect(func():
 				interactable.anim.play("off")
 			)
@@ -307,14 +307,15 @@ func connect_to_camera(index: int) -> void:
 			return
 		
 		push_action_history(MonsterAction.PERFECT_APPEAR)
-		spook_guard(bpm_per_appear_better)
+		spook_guard(bpm_per_appear_better, true)
 	)
 
 
-func spook_guard(delta: float) -> void:
+func spook_guard(delta: float, disconnect_from_camera := false) -> void:
 	update_bpm(delta)
-	connect_to_camera(-1)
-	switch_camera_timer.start()
+	if disconnect_from_camera:
+		connect_to_camera(-1)
+		switch_camera_timer.start()
 	
 	var phrase: String
 	if guard.bpm < Guard.LOW_BPM:
@@ -432,7 +433,7 @@ func _on_monster_area_entered(area: Area2D) -> void:
 			return
 	
 		push_action_history(MonsterAction.APPEAR)
-		spook_guard(bpm_per_appear)
+		spook_guard(bpm_per_appear, true)
 
 
 func _on_monster_area_exited(area: Area2D) -> void:

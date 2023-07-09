@@ -53,4 +53,5 @@ theme_override_fonts/font = ExtResource("7_p5b37")
 text = "BACK"
 flat = true
 
+[connection signal="mouse_entered" from="CenterContainer/VBoxContainer/BackButton" to="." method="_on_back_button_mouse_entered"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/BackButton" to="." method="_on_back_button_pressed"]

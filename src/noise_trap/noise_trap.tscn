@@ -3,8 +3,8 @@
 [ext_resource type="Script" path="res://src/noise_trap/noise_trap.gd" id="1_1b6l7"]
 [ext_resource type="Texture2D" uid="uid://dyq1t7ej1ggwl" path="res://assets/images/tv.png" id="2_2qvey"]
 
-[sub_resource type="Animation" id="Animation_pkdef"]
-resource_name = "off"
+[sub_resource type="Animation" id="Animation_8djan"]
+length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -18,8 +18,8 @@ tracks/0/keys = {
 "values": [0]
 }
 
-[sub_resource type="Animation" id="Animation_8djan"]
-length = 0.001
+[sub_resource type="Animation" id="Animation_pkdef"]
+resource_name = "off"
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -61,6 +61,7 @@ _data = {
 script = ExtResource("1_1b6l7")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
 texture = ExtResource("2_2qvey")
 hframes = 5
 
