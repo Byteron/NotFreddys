@@ -85,11 +85,11 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="BatteryTimer" type="Timer" parent="."]
-wait_time = 10.0
+wait_time = 8.0
 autostart = true
 
 [node name="SwitchCameraTimer" type="Timer" parent="."]
-wait_time = 20.0
+wait_time = 15.0
 autostart = true
 
 [node name="Maze" parent="." instance=ExtResource("2_mxshm")]

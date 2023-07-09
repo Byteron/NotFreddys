@@ -191,6 +191,9 @@ func laugh() -> void:
 func update_monster_charge(delta := 0.0) -> void:
 	monster.charge = clamp(monster.charge + delta, 0, Monster.MAX_CHARGE)
 	hud.set_battery(monster.charge)
+	
+	if monster.charge <= 0:
+		get_tree().change_scene_to_file("res://src/title_screen/title_screen.tscn")
 
 
 func update_bpm(delta := 0.0) -> void:
