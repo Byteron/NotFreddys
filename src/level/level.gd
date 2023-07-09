@@ -22,9 +22,10 @@ const DIRECTIONS8 := [
 const GRID_SIZE := Vector2(16, 16)
 
 enum MonsterAction {
-	Appear,
-	Laugh,
-	Interact,
+	APPEAR,
+	PERFECT_APPEAR,
+	LAUGH,
+	INTERACT,
 }
 
 @onready var monster: Monster = $Monster
@@ -84,6 +85,16 @@ var action_multiplier: float
 
 var phrase_history: Array[String]
 
+var appears: int
+var perfect_appears: int
+var laughs: int
+var noises: int
+var batteries_collected: int
+var zapped_by_roomba: int
+var multiplier_sum: float
+var multiplier_count: float
+var spook_total: int
+
 
 func _ready() -> void:
 	time = start_time
@@ -140,6 +151,12 @@ func push_action_history(action: MonsterAction) -> void:
 	
 	action_history.append(action)
 	
+	match action:
+		MonsterAction.LAUGH: laughs += 1
+		MonsterAction.APPEAR: appears += 1
+		MonsterAction.PERFECT_APPEAR: perfect_appears += 1
+		MonsterAction.INTERACT: noises += 1
+	
 	var count: int
 	var visited: Array[int]
 	for a in action_history:
@@ -148,6 +165,8 @@ func push_action_history(action: MonsterAction) -> void:
 		visited.append(a)
 	
 	action_multiplier = count
+	multiplier_count += 1
+	multiplier_sum += action_multiplier
 
 
 func update_time(delta: float) -> void:
@@ -168,28 +187,27 @@ func get_input_direction() -> Vector2:
 
 
 func interact() -> void:
-	if monster.charge < 0.01:
-		return
-	
-	update_monster_charge(charge_per_interaction)
-	
 	for n_direction in DIRECTIONS8:
 		var n_cell = monster.cell + n_direction
 		
 		if n_cell in interactables:
 			var interactable: NoiseTrap = interactables[n_cell]
 			interactable.anim.play("on")
-			push_action_history(MonsterAction.Interact)
+			push_action_history(MonsterAction.INTERACT)
 			spook_guard(bpm_per_interact)
-			await get_tree().create_timer(2.5).timeout
-			interactable.anim.play("off")
+			var timer = get_tree().create_timer(3.5)
+			timer.timeout.connect(func():
+				interactable.anim.play("off")
+			)
 			return
+	
+	update_monster_charge(charge_per_interaction)
 
 
 func laugh() -> void:
-	update_monster_charge(charge_per_laugh)
-	push_action_history(MonsterAction.Laugh)
+	push_action_history(MonsterAction.LAUGH)
 	spook_guard(bpm_per_laugh)
+	update_monster_charge(charge_per_laugh)
 
 
 func update_monster_charge(delta := 0.0) -> void:
@@ -197,7 +215,22 @@ func update_monster_charge(delta := 0.0) -> void:
 	hud.set_battery(monster.charge)
 	
 	if monster.charge <= 0:
-		get_tree().change_scene_to_file("res://src/game_over/out_of_battery.tscn")
+		end_level(false)
+
+
+func end_level(killed: bool) -> void:
+	EndScreen.spook_total = spook_total
+	EndScreen.killed = killed
+	EndScreen.bpm = guard.bpm
+	EndScreen.time = time
+	EndScreen.appears = appears
+	EndScreen.perfect_appears = perfect_appears
+	EndScreen.multiplier_average = multiplier_sum / multiplier_count
+	EndScreen.laughs = laughs
+	EndScreen.noises = noises
+	EndScreen.zapped_by_roomba = zapped_by_roomba
+	EndScreen.batteries_collected = batteries_collected
+	get_tree().change_scene_to_file("res://src/end_screen/end_screen.tscn")
 
 
 func update_bpm(delta := 0.0) -> void:
@@ -229,17 +262,19 @@ func connect_to_camera(index: int) -> void:
 	cam.cam_sprite.frame = 1
 	cam.light_sprite.modulate = Color.WHEAT
 	cam.light_sprite.modulate.a8 = 80
-	await get_tree().create_timer(camera_connect_time).timeout
-	cam.cam_sprite.frame = 2
-	cam.light_sprite.modulate = Color.GREEN
-	cam.light_sprite.modulate.a8 = 80
-	active_camera = cam
-	
-	if current_camera != active_camera:
-		return
-	
-	push_action_history(MonsterAction.Appear)
-	spook_guard(bpm_per_appear_better)
+	var timer = get_tree().create_timer(camera_connect_time)
+	timer.timeout.connect(func():
+		cam.cam_sprite.frame = 2
+		cam.light_sprite.modulate = Color.GREEN
+		cam.light_sprite.modulate.a8 = 80
+		active_camera = cam
+		
+		if current_camera != active_camera:
+			return
+		
+		push_action_history(MonsterAction.PERFECT_APPEAR)
+		spook_guard(bpm_per_appear_better)
+	)
 
 
 func spook_guard(delta: float) -> void:
@@ -255,6 +290,7 @@ func spook_guard(delta: float) -> void:
 	else:
 		phrase = Guard.HIGH_BPM_PHASES.pick_random()
 	
+	spook_total += delta
 	hud.add_message(phrase)
 
 
@@ -364,7 +400,7 @@ func _on_monster_area_entered(area: Area2D) -> void:
 		if current_camera != active_camera:
 			return
 	
-		push_action_history(MonsterAction.Appear)
+		push_action_history(MonsterAction.APPEAR)
 		spook_guard(bpm_per_appear)
 
 
@@ -387,15 +423,19 @@ func _on_battery_timer_timeout() -> void:
 	battery.position = Vector2(cell.x, cell.y) * GRID_SIZE
 	batteries.add_child(battery)
 	
-	battery.area_entered.connect(func(area: Area2D):
-		if area is Monster:
-			update_monster_charge(charge_per_battery)
-			battery.queue_free()
-	)
+	battery.area_entered.connect(_on_battery_collected.bind(battery))
+
+
+func _on_battery_collected(area: Area2D, battery: Battery):
+	if area is Monster:
+		batteries_collected += 1
+		battery.queue_free()
+		update_monster_charge(charge_per_battery)
 
 
 func _on_roomba_area_entered(area: Area2D) -> void:
 	if area is Monster:
+		zapped_by_roomba += 1
 		update_monster_charge(charge_per_hit)
 
 
