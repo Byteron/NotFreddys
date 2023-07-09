@@ -409,11 +409,13 @@ func move_roomba() -> void:
 	
 	roomba.cell = roomba.cell + roomba.facing
 	roomba.is_moving = true
+	roomba.set_sprite_facing()
 	
 	var tween := get_tree().create_tween()
 	tween.set_parallel(false)
 	tween.tween_property(roomba, "position", roomba.cell * GRID_SIZE, roomba_speed)
 	tween.tween_callback(func(): roomba.is_moving = false)
+	
 	
 
 func is_walkable(cell: Vector2) -> bool:
