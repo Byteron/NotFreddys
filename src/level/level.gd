@@ -266,6 +266,8 @@ func end_level() -> void:
 
 func update_bpm(delta := 0.0) -> void:
 	guard.bpm = clamp(guard.bpm + delta * action_multiplier, min_bpm, max_bpm)
+	spook_total += delta * action_multiplier
+	
 	hud.set_heart_rate(guard.bpm)
 	
 	if guard.bpm < Guard.LOW_BPM:
@@ -325,7 +327,6 @@ func spook_guard(delta: float, disconnect_from_camera := false) -> void:
 	else:
 		phrase = Guard.HIGH_BPM_PHASES.pick_random()
 	
-	spook_total += delta
 	hud.add_message(phrase)
 
 
@@ -387,8 +388,12 @@ func move_roomba() -> void:
 				continue
 			
 			directions.append(n_dir)
-		var dir = directions.pick_random()
-		roomba.facing = dir
+		
+		if directions.size() == 0:
+			roomba.facing = -roomba.facing
+		else:
+			var dir = directions.pick_random()
+			roomba.facing = dir
 	
 	roomba.cell = roomba.cell + roomba.facing
 	roomba.is_moving = true

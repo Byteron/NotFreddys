@@ -17,6 +17,7 @@ battery_scene = ExtResource("6_t2rc0")
 max_batteries = 3
 charge_per_battery = 25.0
 charge_per_step = -0.25
+charge_per_interaction = -15.0
 charge_per_laugh = -50.0
 charge_per_hit = -20.0
 start_bpm = 70.0
