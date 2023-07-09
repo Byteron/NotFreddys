@@ -328,7 +328,7 @@ func spook_guard(delta: float, disconnect_from_camera := false) -> void:
 	else:
 		phrase = Guard.HIGH_BPM_PHASES.pick_random()
 	
-	hud.add_message(phrase)
+	hud.add_message(phrase + " (+%d BPM, %dx)" % [delta * action_multiplier, action_multiplier])
 
 
 func move_monster(direction: Vector2) -> void:
