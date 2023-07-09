@@ -267,7 +267,6 @@ func end_level() -> void:
 
 func update_bpm(delta := 0.0) -> void:
 	guard.bpm = clamp(guard.bpm + delta * action_multiplier, min_bpm, max_bpm)
-	spook_total += delta * action_multiplier
 	
 	hud.set_heart_rate(guard.bpm)
 	
@@ -279,6 +278,7 @@ func update_bpm(delta := 0.0) -> void:
 		music_controller.switch_to_panic()
 	
 	if delta > 0.1:
+		spook_total += delta * action_multiplier
 		print("Delta: %d, Mult: %d" % [delta, action_multiplier])
 
 
@@ -446,6 +446,14 @@ func _on_monster_area_exited(area: Area2D) -> void:
 	current_camera = null
 
 
+func is_next_to_guard(cell: Vector2) -> bool:
+	for n_dir in DIRECTIONS8:
+		var n_cell = cell + n_dir
+		if guard.cell == n_cell:
+			return true
+	return false
+
+
 func _on_battery_timer_timeout() -> void:
 	if batteries.get_child_count() >= max_batteries:
 		return
@@ -455,6 +463,8 @@ func _on_battery_timer_timeout() -> void:
 	for i in range(cells.size() -1, -1, -1):
 		var cell = cells[i]
 		if not is_walkable(cell):
+			cells.erase(cell)
+		if is_next_to_guard(cell):
 			cells.erase(cell)
 	
 	var cell = cells.pick_random()
