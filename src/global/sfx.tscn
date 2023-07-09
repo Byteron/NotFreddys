@@ -1,0 +1,73 @@
+[gd_scene load_steps=19 format=3 uid="uid://b853tf6j1vi8m"]
+
+[ext_resource type="Script" path="res://src/global/sfx.gd" id="1_b6boe"]
+[ext_resource type="AudioStream" uid="uid://btrvajyqaucaw" path="res://assets/sounds/ui/ui_start.ogg" id="2_2dswt"]
+[ext_resource type="AudioStream" uid="uid://bddhqpgacpdyo" path="res://assets/sounds/footstep1.ogg" id="2_83wnx"]
+[ext_resource type="AudioStream" uid="uid://rca6m04cnoh8" path="res://assets/sounds/footstep2.ogg" id="3_ck72k"]
+[ext_resource type="AudioStream" uid="uid://dlx521shuixui" path="res://assets/sounds/ui/ui_select.ogg" id="3_u3won"]
+[ext_resource type="AudioStream" uid="uid://g7o1m3h5knfj" path="res://assets/sounds/ui/ui_move.ogg" id="4_bqpeb"]
+[ext_resource type="AudioStream" uid="uid://dkg41wjds36mg" path="res://assets/sounds/ui/ui_back.ogg" id="5_nxrkb"]
+[ext_resource type="AudioStream" uid="uid://bbx60so8spu56" path="res://assets/sounds/get_battery.ogg" id="8_qqokj"]
+[ext_resource type="AudioStream" uid="uid://d3oovu0ek45dh" path="res://assets/sounds/kitchen_disturbance.ogg" id="9_selv6"]
+[ext_resource type="AudioStream" uid="uid://dg62hhw1jom56" path="res://assets/sounds/laugh1.ogg" id="10_xhadc"]
+[ext_resource type="AudioStream" uid="uid://cgo3ff4o2w60k" path="res://assets/sounds/laugh2.ogg" id="11_01ihs"]
+[ext_resource type="AudioStream" uid="uid://hjl8v1yf3gas" path="res://assets/sounds/laugh3.ogg" id="12_wyewe"]
+[ext_resource type="AudioStream" uid="uid://b7ehv5yhk87l7" path="res://assets/sounds/low_battery.ogg" id="13_4exrb"]
+[ext_resource type="AudioStream" uid="uid://mra7k5jmgxr3" path="res://assets/sounds/out_of_time.ogg" id="14_vpboj"]
+[ext_resource type="AudioStream" uid="uid://bxujoa4g4628y" path="res://assets/sounds/player_hit.ogg" id="15_npph1"]
+[ext_resource type="AudioStream" uid="uid://ygwqu4d6wjib" path="res://assets/sounds/tv_disturbance.ogg" id="16_pe2pp"]
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_mw7pn"]
+streams_count = 2
+stream_0/stream = ExtResource("2_83wnx")
+stream_0/weight = 1.0
+stream_1/stream = ExtResource("3_ck72k")
+stream_1/weight = 1.0
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_3ikvt"]
+streams_count = 3
+stream_0/stream = ExtResource("10_xhadc")
+stream_0/weight = 1.0
+stream_1/stream = ExtResource("11_01ihs")
+stream_1/weight = 1.0
+stream_2/stream = ExtResource("12_wyewe")
+stream_2/weight = 1.0
+
+[node name="SFX" type="Node"]
+script = ExtResource("1_b6boe")
+
+[node name="UIStart" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_2dswt")
+
+[node name="UISelect" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_u3won")
+
+[node name="UIMove" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_bqpeb")
+
+[node name="UIBack" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_nxrkb")
+
+[node name="Footstep" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamRandomizer_mw7pn")
+
+[node name="CollectBattery" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_qqokj")
+
+[node name="KitchenDisturbance" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("9_selv6")
+
+[node name="Laugh" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamRandomizer_3ikvt")
+
+[node name="LowBattery" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("13_4exrb")
+
+[node name="OutOfTime" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("14_vpboj")
+
+[node name="Zapped" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("15_npph1")
+
+[node name="TVDistrubance" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("16_pe2pp")
