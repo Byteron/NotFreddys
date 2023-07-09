@@ -171,9 +171,13 @@ func push_action_history(action: MonsterAction) -> void:
 
 func update_time(delta: float) -> void:
 	time += delta * time_scale
-	var hours = time / 60
+	var hours = int(time / 60)
+	hours = hours if hours > 0 else 12
 	var minutes = int(time) % 60
-	hud.set_time(hours + 12 , snapped(minutes, 5))
+	hud.set_time(hours, floor(minutes / 5.0) * 5.0)
+	
+	if time >= 300.0:
+		get_tree().change_scene_to_file("res://src/game_over/out_of_time.tscn")
 
 
 func get_input_direction() -> Vector2:

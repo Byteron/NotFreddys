@@ -31,7 +31,6 @@ bpm_per_appear_better = 6.0
 camera_connect_time = 4.5
 monster_speed = 0.15
 roomba_speed = 0.2
-time_scale = 2.5
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(216, 120)
