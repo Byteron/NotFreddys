@@ -143,7 +143,12 @@ func _process(delta: float) -> void:
 	move_roomba()
 	update_bpm(bpmrps * delta)
 	update_time(delta)
-
+	
+	for n_direction in DIRECTIONS8:
+		var n_cell = guard.cell + n_direction
+		if monster.cell == n_cell:
+			end_level()
+			
 
 func push_action_history(action: MonsterAction) -> void:
 	if action_history.size() == 3:
@@ -154,7 +159,9 @@ func push_action_history(action: MonsterAction) -> void:
 	match action:
 		MonsterAction.LAUGH: laughs += 1
 		MonsterAction.APPEAR: appears += 1
-		MonsterAction.PERFECT_APPEAR: perfect_appears += 1
+		MonsterAction.PERFECT_APPEAR: 
+			appears += 1
+			perfect_appears += 1
 		MonsterAction.INTERACT: noises += 1
 	
 	var count: int
@@ -176,7 +183,13 @@ func update_time(delta: float) -> void:
 	var minutes = int(time) % 60
 	hud.set_time(hours, floor(minutes / 5.0) * 5.0)
 	
-	if time >= 300.0:
+	if time >= 360.0:
+		set_process(false)
+		set_process_input(false)
+		set_process_unhandled_input(false)
+	
+		await get_tree().create_timer(1).timeout
+		Sfx.stop("LowBattery")
 		get_tree().change_scene_to_file("res://src/game_over/out_of_time.tscn")
 
 
@@ -195,32 +208,43 @@ func interact() -> void:
 			interactable.anim.play("on")
 			push_action_history(MonsterAction.INTERACT)
 			spook_guard(bpm_per_interact)
-			var timer = get_tree().create_timer(3.5)
+			var timer = get_tree().create_timer(7.36)
+			Sfx.play("TVDisturbance")
 			timer.timeout.connect(func():
 				interactable.anim.play("off")
 			)
 			return
-	
-	update_monster_charge(charge_per_interaction)
 
 
 func laugh() -> void:
 	push_action_history(MonsterAction.LAUGH)
 	spook_guard(bpm_per_laugh)
 	update_monster_charge(charge_per_laugh)
+	Sfx.play("Laugh")
 
 
 func update_monster_charge(delta := 0.0) -> void:
 	monster.charge = clamp(monster.charge + delta, 0, Monster.MAX_CHARGE)
 	hud.set_battery(monster.charge)
 	
+	if monster.charge <= 20:
+		Sfx.play("LowBattery")
+	else:
+		Sfx.stop("LowBattery")
+	
 	if monster.charge <= 0:
-		end_level(false)
+		set_process(false)
+		set_process_input(false)
+		set_process_unhandled_input(false)
+	
+		await get_tree().create_timer(1).timeout
+		
+		Sfx.stop("LowBattery")
+		get_tree().change_scene_to_file("res://src/game_over/out_of_battery.tscn")
 
 
-func end_level(killed: bool) -> void:
+func end_level() -> void:
 	EndScreen.spook_total = spook_total
-	EndScreen.killed = killed
 	EndScreen.bpm = guard.bpm
 	EndScreen.time = time
 	EndScreen.appears = appears
@@ -230,6 +254,13 @@ func end_level(killed: bool) -> void:
 	EndScreen.noises = noises
 	EndScreen.zapped_by_roomba = zapped_by_roomba
 	EndScreen.batteries_collected = batteries_collected
+	
+	set_process(false)
+	set_process_input(false)
+	set_process_unhandled_input(false)
+	
+	await get_tree().create_timer(1).timeout
+	Sfx.stop("LowBattery")
 	get_tree().change_scene_to_file("res://src/end_screen/end_screen.tscn")
 
 
@@ -254,10 +285,12 @@ func connect_to_camera(index: int) -> void:
 		active_camera.light_sprite.modulate = Color.WHITE
 		active_camera.light_sprite.modulate.a8 = 20
 		active_camera = null
+		Sfx.play("UIBack")
 	
 	if index == -1:
 		return
 	
+	Sfx.play("UISelect")
 	var cam: Cam = cams.get_child(index)
 	cam.cam_sprite.frame = 1
 	cam.light_sprite.modulate = Color.WHEAT
@@ -268,6 +301,7 @@ func connect_to_camera(index: int) -> void:
 		cam.light_sprite.modulate = Color.GREEN
 		cam.light_sprite.modulate.a8 = 80
 		active_camera = cam
+		Sfx.play("UIStart")
 		
 		if current_camera != active_camera:
 			return
@@ -323,6 +357,8 @@ func move_monster(direction: Vector2) -> void:
 	if not is_walkable(new_cell):
 		return
 	
+	Sfx.play("Footstep")
+	
 	monster.cell = new_cell
 	monster.is_moving = true
 	
@@ -363,11 +399,6 @@ func move_roomba() -> void:
 	
 
 func is_walkable(cell: Vector2) -> bool:
-	for n_direction in DIRECTIONS8:
-		var n_cell = guard.cell + n_direction
-		if cell == n_cell:
-			return false
-	
 	var solid := is_solid(cell)
 	var walkable := false
 	
@@ -431,12 +462,14 @@ func _on_battery_collected(area: Area2D, battery: Battery):
 		batteries_collected += 1
 		battery.queue_free()
 		update_monster_charge(charge_per_battery)
+		Sfx.play("CollectBattery")
 
 
 func _on_roomba_area_entered(area: Area2D) -> void:
 	if area is Monster:
 		zapped_by_roomba += 1
 		update_monster_charge(charge_per_hit)
+		Sfx.play("Zapped")
 
 
 func _on_switch_camera_timer_timeout() -> void:

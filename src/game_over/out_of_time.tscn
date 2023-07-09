@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://src/game_over/game_over.gd" id="1_i33bi"]
 [ext_resource type="FontFile" uid="uid://cohb8fhadh08s" path="res://assets/fonts/PixelOperatorMono8.ttf" id="2_hhgfg"]
-[ext_resource type="AudioStream" uid="uid://5y3ttur4m1df" path="res://assets/sounds/out_of_time.ogg" id="3_ay1qt"]
+[ext_resource type="AudioStream" uid="uid://mra7k5jmgxr3" path="res://assets/sounds/out_of_time.ogg" id="3_ay1qt"]
 
 [sub_resource type="Animation" id="Animation_pm4xh"]
 resource_name = "game_over"

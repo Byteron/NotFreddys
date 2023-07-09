@@ -8,5 +8,15 @@ func _ready() -> void:
 		sfx[child.name] = child
 
 
-func play(sfx_name: String):
-	sfx[sfx_name].play()
+func play(sfx_name: String) -> void:
+	var player: AudioStreamPlayer = sfx[sfx_name]
+	
+	if player.playing:
+		return
+	
+	player.play()
+
+
+func stop(sfx_name: String) -> void:
+	var player: AudioStreamPlayer = sfx[sfx_name]
+	player.stop()

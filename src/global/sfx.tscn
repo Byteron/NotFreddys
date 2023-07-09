@@ -12,13 +12,14 @@
 [ext_resource type="AudioStream" uid="uid://dg62hhw1jom56" path="res://assets/sounds/laugh1.ogg" id="10_xhadc"]
 [ext_resource type="AudioStream" uid="uid://cgo3ff4o2w60k" path="res://assets/sounds/laugh2.ogg" id="11_01ihs"]
 [ext_resource type="AudioStream" uid="uid://hjl8v1yf3gas" path="res://assets/sounds/laugh3.ogg" id="12_wyewe"]
-[ext_resource type="AudioStream" uid="uid://b7ehv5yhk87l7" path="res://assets/sounds/low_battery.ogg" id="13_4exrb"]
+[ext_resource type="AudioStream" uid="uid://c4fax7wyuxjhf" path="res://assets/sounds/low_battery.ogg" id="13_4exrb"]
 [ext_resource type="AudioStream" uid="uid://mra7k5jmgxr3" path="res://assets/sounds/out_of_time.ogg" id="14_vpboj"]
 [ext_resource type="AudioStream" uid="uid://bxujoa4g4628y" path="res://assets/sounds/player_hit.ogg" id="15_npph1"]
 [ext_resource type="AudioStream" uid="uid://ygwqu4d6wjib" path="res://assets/sounds/tv_disturbance.ogg" id="16_pe2pp"]
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_mw7pn"]
 streams_count = 2
+random_pitch = 1.5
 stream_0/stream = ExtResource("2_83wnx")
 stream_0/weight = 1.0
 stream_1/stream = ExtResource("3_ck72k")
@@ -50,6 +51,7 @@ stream = ExtResource("5_nxrkb")
 
 [node name="Footstep" type="AudioStreamPlayer" parent="."]
 stream = SubResource("AudioStreamRandomizer_mw7pn")
+volume_db = -20.0
 
 [node name="CollectBattery" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("8_qqokj")
@@ -69,5 +71,5 @@ stream = ExtResource("14_vpboj")
 [node name="Zapped" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("15_npph1")
 
-[node name="TVDistrubance" type="AudioStreamPlayer" parent="."]
+[node name="TVDisturbance" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("16_pe2pp")

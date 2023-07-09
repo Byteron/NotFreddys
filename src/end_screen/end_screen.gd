@@ -3,7 +3,6 @@ class_name EndScreen
 
 static var time: float
 static var bpm: int
-static var killed: bool
 static var appears: int
 static var perfect_appears: int
 static var laughs: int
@@ -24,7 +23,6 @@ func _ready() -> void:
 	s += "Time: %02d:%02d AM" % [hour, snapped(minute, 5)]
 	s += "\nTotal Spook Points: %d" % spook_total
 	s += "\nBPM: %d" % bpm
-	s += "\nGuard: %s" % "Alive" if not killed else "Dead"
 	s += "\nCam Spooks: %d" % appears
 	s += "\nPerfect Cam Spooks: %d" % perfect_appears
 	s += "\nLaughs: %d" % laughs
