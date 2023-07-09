@@ -23,12 +23,12 @@ func _ready() -> void:
 	s += "Time: %02d:%02d AM" % [hour, snapped(minute, 5)]
 	s += "\nTotal Spook Points: %d" % spook_total
 	s += "\nBPM: %d" % bpm
-	s += "\nCam Spooks: %d" % appears
+	s += "\nSpooks: %d" % (appears + laughs + noises)
 	s += "\nPerfect Cam Spooks: %d" % perfect_appears
-	s += "\nLaughs: %d" % laughs
-	s += "\nNoises: %d" % noises
-	s += "\nBatteries Collected: %d" % batteries_collected
-	s += "\nMultiplier Average: %f" % multiplier_average
+#	s += "\nLaughs: %d" % laughs
+#	s += "\nNoises: %d" % noises
+#	s += "\nBatteries Collected: %d" % batteries_collected
+#	s += "\nMultiplier Average: %f" % multiplier_average
 
 	label.text = s
 
