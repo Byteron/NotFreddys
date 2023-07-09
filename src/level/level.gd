@@ -213,6 +213,7 @@ func interact() -> void:
 			timer.timeout.connect(func():
 				interactable.anim.play("off")
 			)
+			update_monster_charge(charge_per_interaction)
 			return
 
 

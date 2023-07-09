@@ -276,6 +276,9 @@ position = Vector2(344, 120)
 [node name="Marker2D15" type="Marker2D" parent="Solids"]
 position = Vector2(344, 104)
 
+[node name="Marker2D16" type="Marker2D" parent="Solids"]
+position = Vector2(360, 104)
+
 [node name="Interactables" type="Node2D" parent="."]
 
 [node name="NoiseTrap" parent="Interactables" instance=ExtResource("8_gk0kt")]
