@@ -94,6 +94,22 @@ theme_override_font_sizes/font_size = 8
 text = "100 BPM"
 horizontal_alignment = 2
 
+[node name="Label_Interact" type="Label" parent="."]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -48.0
+offset_top = 11.0
+offset_right = 48.0
+offset_bottom = 22.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("2_meid2")
+theme_override_font_sizes/font_size = 8
+text = "Interact (E)"
+horizontal_alignment = 2
+
 [node name="VBox_Messages" type="VBoxContainer" parent="."]
 layout_mode = 0
 offset_left = 24.0

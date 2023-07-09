@@ -95,6 +95,21 @@ autostart = true
 [node name="Maze" parent="." instance=ExtResource("2_mxshm")]
 z_index = -10
 
+[node name="Interactables" type="Node2D" parent="."]
+
+[node name="NoiseTrap" parent="Interactables" instance=ExtResource("8_gk0kt")]
+position = Vector2(360, 104)
+sfx_name = "TVDisturbance"
+
+[node name="NoiseTrap2" parent="Interactables" instance=ExtResource("8_gk0kt")]
+position = Vector2(72, 104)
+sfx_name = "KitchenDisturbance"
+
+[node name="Sprite2D" parent="Interactables/NoiseTrap2" index="0"]
+visible = false
+
+[node name="Batteries" type="Node2D" parent="."]
+
 [node name="Guard" parent="." instance=ExtResource("3_hq3pm")]
 position = Vector2(208, 112)
 
@@ -170,8 +185,6 @@ flip_h = true
 
 [node name="CollisionPolygon2D" parent="Cams/Cam6" index="2"]
 polygon = PackedVector2Array(-4, 1, -63, 31, -29, 31, -29, 62, 0, 5)
-
-[node name="Batteries" type="Node2D" parent="."]
 
 [node name="Intersections" type="Node2D" parent="."]
 
@@ -279,19 +292,6 @@ position = Vector2(344, 104)
 [node name="Marker2D16" type="Marker2D" parent="Solids"]
 position = Vector2(360, 104)
 
-[node name="Interactables" type="Node2D" parent="."]
-
-[node name="NoiseTrap" parent="Interactables" instance=ExtResource("8_gk0kt")]
-position = Vector2(360, 104)
-sfx_name = "TVDisturbance"
-
-[node name="NoiseTrap2" parent="Interactables" instance=ExtResource("8_gk0kt")]
-position = Vector2(72, 104)
-sfx_name = "KitchenDisturbance"
-
-[node name="Sprite2D" parent="Interactables/NoiseTrap2" index="0"]
-visible = false
-
 [node name="MusicController" parent="." instance=ExtResource("10_etlhc")]
 
 [connection signal="timeout" from="BatteryTimer" to="." method="_on_battery_timer_timeout"]
@@ -300,10 +300,10 @@ visible = false
 [connection signal="area_exited" from="Monster" to="." method="_on_monster_area_exited"]
 [connection signal="area_entered" from="Roomba" to="." method="_on_roomba_area_entered"]
 
+[editable path="Interactables/NoiseTrap2"]
 [editable path="Cams/Cam1"]
 [editable path="Cams/Cam2"]
 [editable path="Cams/Cam3"]
 [editable path="Cams/Cam4"]
 [editable path="Cams/Cam5"]
 [editable path="Cams/Cam6"]
-[editable path="Interactables/NoiseTrap2"]

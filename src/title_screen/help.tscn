@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://nfckjosqpsrs"]
+[gd_scene load_steps=8 format=3 uid="uid://nfckjosqpsrs"]
 
 [ext_resource type="Script" path="res://src/title_screen/help.gd" id="1_8ygrp"]
 [ext_resource type="FontFile" uid="uid://cohb8fhadh08s" path="res://assets/fonts/PixelOperatorMono8.ttf" id="2_g0tsd"]
@@ -9,6 +9,9 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_q7prl"]
 shader = ExtResource("2_obdwy")
 shader_parameter/noise = ExtResource("3_ypjhe")
+
+[sub_resource type="LabelSettings" id="LabelSettings_qhtgr"]
+font_size = 12
 
 [node name="Help" type="Control"]
 layout_mode = 3
@@ -42,7 +45,9 @@ Interact: E
 Laugh: SPACEBAR
 
 Do not run out of battery.
-End game before 6 AM."
+End game before 6 AM.
+Vary actions for bonus spook points"
+label_settings = SubResource("LabelSettings_qhtgr")
 horizontal_alignment = 1
 vertical_alignment = 1
 

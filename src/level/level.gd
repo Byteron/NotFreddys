@@ -149,7 +149,14 @@ func _process(delta: float) -> void:
 		var n_cell = guard.cell + n_direction
 		if monster.cell == n_cell:
 			end_level()
-			
+	
+	hud.set_interact(false)
+	
+	for n_direction in DIRECTIONS8:
+		var n_cell = monster.cell + n_direction
+		
+		if n_cell in interactables:
+				hud.set_interact(true)
 
 func push_action_history(action: MonsterAction) -> void:
 	if action_history.size() == 3:

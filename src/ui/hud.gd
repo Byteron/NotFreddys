@@ -7,8 +7,11 @@ const _Message : PackedScene = preload("res://src/ui/message.tscn")
 @onready var label_heartrate : Label = $Label_Heartrate
 @onready var vbox_messages : VBoxContainer = $VBox_Messages
 @onready var texture_heartrate: TextureRect = $Texture_Heartrate
+@onready var label_interact: Label = $Label_Interact
 
 var bpm: int
+var battery: float
+
 var tween: Tween
 
 func _process(delta: float) -> void:
@@ -34,11 +37,23 @@ func _exit_tree() -> void:
 		tween = null
 
 
+func set_interact(value: bool) -> void:
+	label_interact.visible = true
+	if value:
+		label_interact.text = "Interact (E)"
+	elif battery > 50:
+		label_interact.text = "Laugh (SPACE)"
+	else:
+		label_interact.visible = false
+		
+
+
 func set_time(hour : int, minute : int) -> void:
 	label_time.text = "%02d:%02d AM" % [hour, minute]
 
 
 func set_battery(battery : int) -> void:
+	self.battery = battery
 	label_battery.text = "%d%%" % battery
 	if battery < 20:
 		label_battery.modulate = Color.RED
