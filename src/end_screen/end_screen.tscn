@@ -1,0 +1,56 @@
+[gd_scene load_steps=7 format=3 uid="uid://ci4735npidvsy"]
+
+[ext_resource type="Script" path="res://src/end_screen/end_screen.gd" id="1_5okqp"]
+[ext_resource type="Shader" path="res://src/title_screen/static.gdshader" id="2_ocjq6"]
+[ext_resource type="Texture2D" uid="uid://b5d4gqbffl40t" path="res://assets/images/pixel_noise.png" id="3_gc7rb"]
+[ext_resource type="FontFile" uid="uid://cohb8fhadh08s" path="res://assets/fonts/PixelOperatorMono8.ttf" id="4_j8iy6"]
+[ext_resource type="FontFile" uid="uid://b1muytm6eruh1" path="res://assets/fonts/PixelOperatorMono8-Bold.ttf" id="7_p5b37"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wyt5e"]
+shader = ExtResource("2_ocjq6")
+shader_parameter/noise = ExtResource("3_gc7rb")
+
+[node name="EndScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_5okqp")
+
+[node name="Background" type="ColorRect" parent="."]
+texture_filter = 1
+material = SubResource("ShaderMaterial_wyt5e")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_j8iy6")
+horizontal_alignment = 1
+
+[node name="BackButton" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+theme_override_fonts/font = ExtResource("7_p5b37")
+text = "BACK"
+flat = true
+
+[connection signal="pressed" from="CenterContainer/VBoxContainer/BackButton" to="." method="_on_back_button_pressed"]
