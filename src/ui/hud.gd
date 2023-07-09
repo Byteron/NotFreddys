@@ -49,6 +49,13 @@ func set_battery(battery : int) -> void:
 func set_heart_rate(bpm : int) -> void:
 	self.bpm = bpm
 	label_heartrate.text = "%d BPM" % bpm
+	
+	if bpm < Guard.LOW_BPM:
+		texture_heartrate.modulate = Color.WHITE
+	elif bpm < Guard.MEDIUM_BPM:
+		texture_heartrate.modulate = Color.YELLOW
+	else:
+		texture_heartrate.modulate = Color.ORANGE
 
 
 func add_message(text : String) -> void:

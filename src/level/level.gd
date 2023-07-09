@@ -82,6 +82,7 @@ var time: float
 
 var action_history: Array[int]
 var action_multiplier: float
+var bpm_multiplier: float
 
 var phrase_history: Array[String]
 
@@ -266,20 +267,23 @@ func end_level() -> void:
 
 
 func update_bpm(delta := 0.0) -> void:
-	guard.bpm = clamp(guard.bpm + delta * action_multiplier, min_bpm, max_bpm)
+	guard.bpm = clamp(guard.bpm + delta * action_multiplier * bpm_multiplier, min_bpm, max_bpm)
 	
 	hud.set_heart_rate(guard.bpm)
 	
 	if guard.bpm < Guard.LOW_BPM:
 		music_controller.switch_to_calm()
+		bpm_multiplier = 1
 	elif guard.bpm < Guard.MEDIUM_BPM:
 		music_controller.switch_to_caution()
+		bpm_multiplier = 1.5
 	else:
 		music_controller.switch_to_panic()
+		bpm_multiplier = 2
 	
 	if delta > 0.1:
-		spook_total += delta * action_multiplier
-		print("Delta: %d, Mult: %d" % [delta, action_multiplier])
+		spook_total += delta * action_multiplier * bpm_multiplier
+		print("Delta: %d, Mult: %d" % [delta, action_multiplier * bpm_multiplier])
 
 
 func connect_to_camera(index: int) -> void:
@@ -328,7 +332,7 @@ func spook_guard(delta: float, disconnect_from_camera := false) -> void:
 	else:
 		phrase = Guard.HIGH_BPM_PHASES.pick_random()
 	
-	hud.add_message(phrase + " (+%d BPM, %dx)" % [delta * action_multiplier, action_multiplier])
+	hud.add_message(phrase + " (+%d BPM, %dx)" % [delta * action_multiplier * bpm_multiplier, action_multiplier * bpm_multiplier])
 
 
 func move_monster(direction: Vector2) -> void:
